@@ -1,0 +1,10 @@
+/venv
+*.py[cod]
+*.charm
+bundle/
+htmlcov/
+mypyhtml/
+.tox/
+.vscode/
+.pytest_cache/
+.mypy_cache/
