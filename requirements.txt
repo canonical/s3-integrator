@@ -1,0 +1,2 @@
+ops@ git+https://github.com/canonical/operator.git#egg=ops
+; ops >= 1.2.0

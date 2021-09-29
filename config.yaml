@@ -1,0 +1,19 @@
+# Copyright 2021 Canonical Ltd.
+# SPDX-License-Identifier: Apache-2.0
+options:
+  s3_endpoint:
+    type: string
+    description: S3-API Compatible endpoint
+    default: 's3.amazonaws.com'
+  s3_bucket:
+    type: string
+    description: The S3 bucket to use.
+    default: ''
+  s3_region:
+    type: string
+    description: The S3 region to use.
+    default: ''
+  s3_path:
+    type: string
+    description: The location in the s3 bucket where binary objects will be stored
+    default: 'filestore'

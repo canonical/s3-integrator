@@ -1,0 +1,41 @@
+[build-system]
+requires = ['setuptools>=44.0.0', 'wheel>=0.34.0']
+build-backend = 'setuptools.build_meta'
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+plugins = "flake8"
+markers = ["integration"]
+addopts = "-ra"
+testpaths = ["tests/"]
+norecursedirs = [".*", "build", "dist", "news", "tasks", "docs"]
+flake8-ignore = [
+    "docs/source/* ALL",
+    "tests/*.py ALL",
+    "setup.py ALL",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.pyre_configuration
+  | \.venv
+  | venv
+  | _build
+  | build
+  | dist
+)
+'''
+
+

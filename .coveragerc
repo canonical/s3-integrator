@@ -1,0 +1,26 @@
+[run]
+branch = True
+dynamic_context = test_function
+parallel = True
+source =
+    src/
+    lib/charms/
+
+[report]
+precision = 2
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if self\.debug
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if False:
+    if MYPY_RUNNING:
+    if __name__ == .__main__.:
+
+[html]
+directory = htmlcov
+
+[xml]
+output = coverage.xml

@@ -1,0 +1,12 @@
+# Copyright 2021 Canonical Ltd.
+# SPDX-License-Identifier: Apache-2.0
+sync-s3-credentials:
+  description: Synchronize amazon AWS S3 credentials
+  params:
+    access-key-id:
+      type: string
+      description: The AWS access key ID
+    secret-access-key:
+      type: string
+      description: The AWS secret access key
+  required: [access-key-id, secret-access-key]

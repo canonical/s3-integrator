@@ -1,0 +1,89 @@
+name: Tests
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - '*.md'
+      - '.gitignore'
+      - '.editorconfig'
+      - '.pre-commit-config.yaml'
+      - 'LICENSE'
+  pull_request:
+    paths-ignore:
+      - '*.md'
+      - '.gitignore'
+      - '.editorconfig'
+      - '.pre-commit-config.yaml'
+      - 'LICENSE'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install tox
+    - name: Lint
+      if: ${{ matrix.python-version == '3.8' }}
+      run: tox -e checklint
+    - name: Tests
+      run: tox -e py
+    - name: Coverage
+      if: ${{ matrix.python-version == '3.8' }}
+      run: tox -e coverage
+    - name: Upload coverage report
+      if: ${{ matrix.python-version == '3.8' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: Coverage
+        path: htmlcov
+  integration-tests:
+    name: Integration Test on Juju via LXD
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: install charmcraft
+        run: sudo snap install charmcraft --classic
+      - name: Set up operator test environment
+        # see https://github.com/charmed-kubernetes/actions-operator/issues/19
+        continue-on-error: true
+        uses: charmed-kubernetes/actions-operator@main
+        with:
+            provider: lxd
+      # see https://github.com/charmed-kubernetes/actions-operator/issues/18
+      - name: add user to lxd group
+        run: |
+          sudo usermod -a -G lxd $USER
+      # maybe this will drop is into the lxd user group properly
+      - name: run integration Tests
+        # see https://github.com/charmed-kubernetes/actions-operator/issues/18
+        run: |
+          sudo su -l -c "$(which bash) -c 'cd $PWD && $(which tox) -e integration'" $USER
+#     - name: Upload coverage to Codecov
+      # uses: codecov/codecov-action@v2
+      # with:
+        # token: ${{ secrets.CODECOV_TOKEN }}
+        # directory: ./coverage/reports/
+        # env_vars: OS,PYTHON
+        # fail_ci_if_error: true
+        # files: ./coverage.xml
+        # flags: unittests
+        # name: codecov-umbrella
+        # path_to_write_report: ./coverage/codecov_report.txt
+        # verbose: true
