@@ -74,9 +74,7 @@ jobs:
       - name: run integration Tests
         # see https://github.com/charmed-kubernetes/actions-operator/issues/18
         run: |
-          sudo apt-get update && sudo apt-get -y install git
-          tox -e integration
-      # sudo su -l -c "$(which bash) -c 'cd $PWD && $(which tox) -e integration'" $USER
+          sudo su -l -c "$(which bash) -c 'cd $PWD && $(which tox) -e integration'" $USER
 #     - name: Upload coverage to Codecov
       # uses: codecov/codecov-action@v2
       # with:
