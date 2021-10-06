@@ -40,7 +40,7 @@
 
 ## Deploying the charm
 
-1. Simploy deploy the charm via juju:
+1. Simply deploy the charm via juju:
 
 ```bash
     $ juju deploy ./s3-integrator_ubuntu-20.04-amd64.charm
