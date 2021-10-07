@@ -13,7 +13,7 @@ import ops.model
 import ops.testing
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
-from charms.s3.v0.s3 import S3Consumer, S3Provider
+from charms.s3_integrator.v0.s3 import S3Consumer, S3Provider
 
 sys.path.append(pathlib.Path(__file__).parent.joinpath("../src").as_posix())
 sys.path.append(pathlib.Path(__file__).parent.joinpath("../lib").as_posix())

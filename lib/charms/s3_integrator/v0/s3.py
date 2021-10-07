@@ -1,5 +1,45 @@
 # Copyright 2021 Canonical Ltd.
 # SPDX-License-Identifier: Apache-2.0
+"""A library for communicating with the S3 integrator providers and consumers.
+
+This library provides the relevant interface code implementing the communication
+specification for fetching, retrieving, triggering, and responding to events related to
+the S3 integrator charm and its consumers.
+
+The provider is implemented in the `s3-integrator` charm which is meant to be deployed
+alongside one or more consumer charms. The integrator charm should then have credentials
+set via its action:
+
+   .. code-block:: bash
+
+      $ juju run-action s3-integrator/leader sync-s3-credentials \
+          access-key-id=<your_key> secret-access-key=<your_secret_key>
+
+The consumer end of the charm should be implemented as follows:
+
+   .. code-block:: python
+
+      from charms.s3_integrator.v0.s3 import S3Consumer
+
+      class MyCharm(CharmBase):
+          def __init__(self, *args, **kwargs):
+              super().__init__(*args, **kwargs)
+              self.s3_credentials = {}
+              self.s3_credential_client = S3Consumer(
+                  self,
+                  "s3-credentials",
+              )
+              self.framework.observe(
+                  self.s3_credential_client.on.credentials_changed,
+                  self._on_s3_credentials_changed,
+              )
+          def _on_s3_credentials_changed(self, event):
+              credentials = self.s3_client.get_credentials()
+              if credentials.get("secret_access_key"):
+                  self.s3_credentials.update(credentials)
+                  self.write_s3_config(credentials)
+                  self.restart()
+"""
 import json
 import logging
 from typing import Any, Dict, Optional, Union
@@ -8,7 +48,7 @@ import ops.charm
 import ops.framework
 import ops.model
 
-LIBID = "d6e489f88aba41ef9f713f59293e1062"
+LIBID = "55c4cfd4a8ac45b1b62f2826272a1cf8"
 LIBAPI = 0
 LIBPATCH = 1
 

@@ -11,7 +11,7 @@ import ops.framework
 import ops.lib
 import ops.main
 import ops.model
-from charms.s3.v0.s3 import S3Provider
+from charms.s3_integrator.v0.s3 import S3Provider
 
 logger = logging.getLogger(__name__)
 
