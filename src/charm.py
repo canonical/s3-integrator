@@ -75,7 +75,6 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             resend_credentials = True
         if resend_credentials:
             self._send_s3_credentials()
-        self.unit.status = ops.model.ActiveStatus()
 
     def _send_s3_credentials(self) -> None:
         """Send S3 credentials over to any consumers.
@@ -85,7 +84,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             None: None
         """
         if self._stored.s3_secret_access_key and self._stored.s3_access_key_id:
-            self.status = ops.model.MaintenanceStatus("Sending S3 credentials...")
+            self.unit.status = ops.model.MaintenanceStatus("Sending S3 credentials...")
             self.s3_provider.set_credentials(
                 bucket=self._stored.s3_bucket,
                 region=self._stored.s3_region,
@@ -94,7 +93,9 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 secret_access_key=self._stored.s3_secret_access_key,
                 path=self._stored.s3_path,
             )
-            self.status = ops.model.ActiveStatus()
+            self.unit.status = ops.model.ActiveStatus()
+            if self.unit.is_leader:
+                self.app.status = ops.model.ActiveStatus()
 
     def _on_sync_s3_credentials(self, event: ops.charm.ActionEvent) -> None:
         """Handle a user synchronizing their S3 credentials to the charm.
