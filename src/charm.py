@@ -52,7 +52,9 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         Returns:
             None: None
         """
-        self.unit.status = ops.model.WaitingStatus("Waiting for S3 credentials")
+        self.unit.status = ops.model.ActiveStatus("Ready for S3 credentials")
+        if self.unit.is_leader():
+            self.app.status = ops.model.ActiveStatus()
 
     def _on_config_changed(self, _: ops.charm.ConfigChangedEvent) -> None:
         """Event handler for configuration changed events.

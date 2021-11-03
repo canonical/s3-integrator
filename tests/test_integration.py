@@ -32,7 +32,7 @@ async def test_bundle(ops_test, charm_path):
     await ops_test.model.deploy(bundle)
     await ops_test.model.wait_for_idle()
     for unit in ops_test.model.units.values():
-        assert unit.workload_status == "waiting"
+        assert unit.workload_status == "active"
 
 
 # workaround for https://github.com/charmed-kubernetes/pytest-operator/issues/26
