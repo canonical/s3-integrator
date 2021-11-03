@@ -96,7 +96,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 path=self._stored.s3_path,
             )
             self.unit.status = ops.model.ActiveStatus()
-            if self.unit.is_leader:
+            if self.unit.is_leader():
                 self.app.status = ops.model.ActiveStatus()
 
     def _on_sync_s3_credentials(self, event: ops.charm.ActionEvent) -> None:
