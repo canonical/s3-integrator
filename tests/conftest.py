@@ -26,7 +26,7 @@ CHARM_PATH = pathlib.Path(__file__).parent.parent.absolute()
 CLIENT_META = """
 name: s3client
 requires:
-  s3-provider:
+  s3-client:
     interface: s3_credentials
 """
 
@@ -69,7 +69,7 @@ class TestClientCharm(ops.charm.CharmBase):
         self.event_map = {}
         self.s3_client = S3Consumer(
             self,
-            "s3-provider",
+            "s3-client",
         )
         self.framework.observe(
             self.s3_client.on.credentials_changed,
@@ -109,16 +109,16 @@ class S3Charm:
         self.remote_unit_number = 0
         if relate_consumer:
             self.consumer_relation_id = self.harness.add_relation(
-                "s3_credentials", "consumer"
+                "s3-credentials", "s3client"
             )
-            self.consumer_unit = f"consumer/{self.remote_unit_number}"
+            self.consumer_unit = f"s3client/{self.remote_unit_number}"
             self.remote_unit_number += 1
             self.harness.add_relation_unit(
                 self.consumer_relation_id, self.consumer_unit
             )
         if relate_s3:
             self.s3_relation_id = self.harness.add_relation(
-                "s3-provider", "s3_credentials"
+                "s3-client", "s3-integrator"
             )
             self.add_s3_relation()
             self.remote_unit_number += 1
@@ -143,16 +143,16 @@ class S3Charm:
         self.run_mock = self.stack.enter_context(unittest.mock.patch("subprocess.run"))
 
     def add_s3_relation(self):
-        self.s3_unit = f"s3_credentials/{self.remote_unit_number}"
+        self.s3_unit = f"s3-integrator/{self.remote_unit_number}"
         self.harness.add_relation_unit(self.s3_relation_id, self.s3_unit)
 
     @property
     def s3_relation(self):
-        return self.harness.model.relations["s3-provider"][0]
+        return self.harness.model.relations["s3-client"][0]
 
     @property
     def consumer_relation(self):
-        return self.harness.model.relations["s3_credentials"][0]
+        return self.harness.model.relations["s3-credentials"][0]
 
     @property
     def s3_remote_app(self):
@@ -182,7 +182,7 @@ class S3Charm:
         data = {k: v for k, v in data.items() if v is not None}
         self.harness.update_relation_data(
             self.s3_relation_id,
-            "s3_credentials",
+            "s3-integrator",
             {"s3_credentials": json.dumps(data)},
         )
 
