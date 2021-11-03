@@ -83,7 +83,9 @@ class S3IntegratorCharm(ops.charm.CharmBase):
 
             None: None
         """
+        logger.debug("checking for credentials...")
         if self._stored.s3_secret_access_key and self._stored.s3_access_key_id:
+            logger.debug("found credentials in storage, sending...")
             self.unit.status = ops.model.MaintenanceStatus("Sending S3 credentials...")
             self.s3_provider.set_credentials(
                 bucket=self._stored.s3_bucket,
