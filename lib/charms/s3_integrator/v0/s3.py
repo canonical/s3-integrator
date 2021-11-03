@@ -332,11 +332,16 @@ class S3Provider(ops.framework.Object):
         if not self.charm.unit.is_leader():
             return
         if event is not None:
+            logger.debug("setting relation data for event...")
             event.relation.data[self.charm.app].update(self._generate_relation_data())
         else:
+            logger.debug(f"checking for {self.name} in relations...")
+            relation_keys = ", ".join(self.charm.model.relations.keys())
+            logger.debug(f"Relations found: {relation_keys}")
             if self.name in self.charm.model.relations:
+                relation_data = self._generate_relation_data()
                 for relation in self.charm.model.relations[self.name]:
-                    relation.data[self.charm.app].update(self._generate_relation_data())
+                    relation.data[self.charm.app].update(relation_data)
         return
 
     def _generate_relation_data(self) -> Dict[str, str]:
