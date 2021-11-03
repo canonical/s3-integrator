@@ -33,7 +33,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 "s3_secret_access_key": "",
             }
         )
-        self.s3_provider = S3Provider(self, "s3_credentials")
+        self.s3_provider = S3Provider(self, "s3-credentials")
         self.framework.observe(self.on.start, self._on_start)
         self.framework.observe(self.on.config_changed, self._on_config_changed)
         self.framework.observe(
