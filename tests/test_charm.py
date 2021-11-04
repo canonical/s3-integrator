@@ -31,8 +31,8 @@ def test_set_charm_config_with_changes_updates(s3_charm):
         "s3_path": "filestore",
     }
     new_values = original_values.copy()
-    new_values["s3_access_key_id"] = "fake-access-key"
-    new_values["s3_secret_access_key"] = "fake-secret-access-key"
+    new_values["s3_path"] = "fake-path"
+    new_values["s3_bucket"] = "fake-bucket"
     s3_charm.harness.update_config(new_values)
     send_credentials_mock.assert_called_once()
 
@@ -61,17 +61,24 @@ def test_send_s3_credentials(s3_charm):
         "s3_bucket": str(uuid.uuid4()).replace("-", ""),
         "s3_region": "us-west-2",
         "s3_path": "filestore",
-        "s3_access_key_id": "fake-access-key",
-        "s3_secret_access_key": "fake-secret-access-key",
     }
+    access_key = "fake-access-key"
+    secret_access_key = "fake-secret-key"
     with s3_charm.harness.hooks_disabled():
         s3_charm.harness.update_config(new_values)
         for k, v in new_values.items():
             setattr(s3_charm.charm._stored, k, v)
+        s3_charm.charm._stored.s3_access_key_id = access_key
+        s3_charm.charm._stored.s3_secret_access_key = secret_access_key
     s3_charm.charm._send_s3_credentials()
-    set_credentials_mock.assert_called_with(
-        **{k.replace("s3_", ""): v for k, v in new_values.items()}
+    expected = {k.replace("s3_", ""): v for k, v in new_values.items()}
+    expected.update(
+        {
+            "access_key_id": access_key,
+            "secret_access_key": secret_access_key,
+        }
     )
+    set_credentials_mock.assert_called_with(**expected)
 
 
 def test_set_s3_credentials(s3_charm):
