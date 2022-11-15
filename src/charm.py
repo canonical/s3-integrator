@@ -16,37 +16,12 @@ import ops.lib
 import ops.main
 import ops.model
 from charms.data_platform_libs.v0.s3 import CredentialRequestedEvent, S3Provider
-from ops.charm import (
-    ActionEvent,
-    ConfigChangedEvent,
-    RelationChangedEvent,
-    RelationJoinedEvent,
-    StartEvent,
-)
+from ops.charm import ActionEvent, ConfigChangedEvent, RelationChangedEvent, StartEvent
 from ops.model import ActiveStatus, BlockedStatus
 
+from constants import PEER, S3_LIST_OPTIONS, S3_MANDATORY_OPTIONS, S3_OPTIONS
+
 logger = logging.getLogger(__name__)
-PEER = "s3-integrator-peers"
-S3_OPTIONS = [
-    "access-key",
-    "secret-key",
-    "region",
-    "storage-class",
-    "attributes",
-    "bucket",
-    "endpoint",
-    "path",
-    "s3-api-version",
-    "s3-uri-style",
-    "tls-ca-chain",
-]
-
-S3_MANDATORY_OPTIONS = [
-    "access-key",
-    "secret-key",
-]
-
-S3_LIST_OPTIONS = ["attributes", "tls-ca-chain"]
 
 
 class S3IntegratorCharm(ops.charm.CharmBase):
@@ -60,7 +35,6 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         self.framework.observe(
             self.s3_provider.on.credentials_requested, self._on_credential_requested
         )
-        self.framework.observe(self.on[PEER].relation_joined, self._on_peer_relation_joined)
         self.framework.observe(self.on[PEER].relation_changed, self._on_peer_relation_changed)
         # actions
         self.framework.observe(self.on.sync_s3_credentials_action, self._on_sync_s3_credentials)
@@ -78,43 +52,56 @@ class S3IntegratorCharm(ops.charm.CharmBase):
 
         return relation.data[self.app]
 
+    @property
+    def unit_peer_data(self) -> Dict:
+        """Peer relation data object."""
+        relation = self.model.get_relation(PEER)
+        if relation is None:
+            return {}
+
+        return relation.data[self.unit]
+
     def _on_start(self, _: StartEvent) -> None:
         """Handle the charm startup event."""
-        if self.unit.is_leader():
-            missing_options = self.get_missing_parameters()
-            self.unit.status = ops.model.BlockedStatus(f"Missing parameters: {missing_options}")
+        missing_options = self.get_missing_parameters()
+        self.unit.status = ops.model.BlockedStatus(f"Missing parameters: {missing_options}")
 
     def _on_config_changed(self, _: ConfigChangedEvent) -> None:
         """Event handler for configuration changed events."""
+        # Only execute in the unit leader
+        if not self.unit.is_leader():
+            return
         logger.debug(f"Current configuration: {self.config}")
         # store updates from config and apply them.
         update_config = {}
 
         # iterate over the option and check for updates
-        for k in S3_OPTIONS:
-            if k not in self.config:
-                logger.warning(f"Option {k} is not valid option!")
+        for option in S3_OPTIONS:
+            if option not in self.config:
+                logger.warning(f"Option {option} is not valid option!")
                 continue
             # skip in case of empty config
-            if self.config[k] == "":
+            if self.config[option] == "":
                 # reset previous value if present (e.g., juju model-config --reset PARAMETER)
-                if self.get_secret("app", k) is not None:
-                    self.set_secret("app", k, None)
+                if self.get_secret("app", option) is not None:
+                    self.set_secret("app", option, None)
                 # skip in case of default value
                 continue
             # manage comma-separated items for attributes
-            if k == "attributes":
-                value = self.config[k].split(",")
-                update_config.update({k: value})
-                self.set_secret("app", k, json.dumps(value))
+            if option == "attributes":
+                values = self.config[option].split(",")
+                update_config.update({option: values})
+                self.set_secret("app", option, json.dumps(values))
             # manage ca-chain
-            elif k == "tls-ca-chain":
-                ca_chain = self.parse_ca_chain(base64.b64decode(self.config[k]).decode("utf-8"))
-                update_config.update({k: ca_chain})
-                self.set_secret("app", k, json.dumps(ca_chain))
+            elif option == "tls-ca-chain":
+                ca_chain = self.parse_ca_chain(
+                    base64.b64decode(self.config[option]).decode("utf-8")
+                )
+                update_config.update({option: ca_chain})
+                self.set_secret("app", option, json.dumps(ca_chain))
             else:
-                update_config.update({k: self.config[k]})
-                self.set_secret("app", k, self.config[k])
+                update_config.update({option: self.config[option]})
+                self.set_secret("app", option, self.config[option])
 
         if len(self.s3_provider.relations) > 0:
             for relation in self.s3_provider.relations:
@@ -194,21 +181,12 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         # update relation data if the relation is present
         if len(self.s3_provider.relations) > 0:
             for relation in self.s3_provider.relations:
-                self.s3_provider.update_connection_info(relation.id, credentials)
+                self.s3_provider.set_access_key(relation.id, access_key)
+                self.s3_provider.set_secret_key(relation.id, secret_key)
         event.set_results(credentials)
-
-    def _on_peer_relation_joined(self, _: RelationJoinedEvent) -> None:
-        """Handle the peer relation joined event."""
-        # Only execute in the unit leader
-        if not self.unit.is_leader():
-            return
-        logger.debug("on peer relation joined")
 
     def _on_peer_relation_changed(self, _: RelationChangedEvent) -> None:
         """Handle the peer relation changed event."""
-        # Only execute in the unit leader
-        if not self.unit.is_leader():
-            return
         # Check if mandatory configuration options are present and change the status
         missing_options = self.get_missing_parameters()
         logger.info(f"Missing options: {missing_options}")
@@ -224,9 +202,6 @@ class S3IntegratorCharm(ops.charm.CharmBase):
 
     def on_get_credentials_action(self, event: ActionEvent):
         """Handle the action `get-credential`."""
-        if not self.unit.is_leader():
-            event.fail("The action can be run only on leader unit.")
-            return
         access_key = self.get_secret("app", "access-key")
         secret_key = self.get_secret("app", "secret-key")
         if access_key is None or secret_key is None:

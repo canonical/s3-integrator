@@ -92,4 +92,4 @@ The core implementation of this charm is represented by the [S3IntegratorCharm](
 
 ## Canonical Contributor Agreement
 
-Canonical welcomes contributions to the Charmed MongoDB Operator. Please check out our [contributor agreement](https://ubuntu.com/legal/contributors) if you're interested in contributing to the solution.
+Canonical welcomes contributions to the Charmed S3 Integrator Operator. Please check out our [contributor agreement](https://ubuntu.com/legal/contributors) if you're interested in contributing to the solution.
