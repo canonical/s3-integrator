@@ -17,5 +17,5 @@ peers:
     interface: s3-integrator-peers
 
 provides:
-  s3-credentials:
-    interface: s3-credentials
+  s3:
+    interface: s3

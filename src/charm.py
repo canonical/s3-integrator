@@ -19,7 +19,13 @@ from charms.data_platform_libs.v0.s3 import CredentialRequestedEvent, S3Provider
 from ops.charm import ActionEvent, ConfigChangedEvent, RelationChangedEvent, StartEvent
 from ops.model import ActiveStatus, BlockedStatus
 
-from constants import PEER, S3_LIST_OPTIONS, S3_MANDATORY_OPTIONS, S3_OPTIONS
+from constants import (
+    PEER,
+    S3_LIST_OPTIONS,
+    S3_MANDATORY_OPTIONS,
+    S3_OPTIONS,
+    S3_RELATION,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +35,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
 
     def __init__(self, *args) -> None:
         super().__init__(*args)
-        self.s3_provider = S3Provider(self, "s3-credentials")
+        self.s3_provider = S3Provider(self, S3_RELATION)
         self.framework.observe(self.on.start, self._on_start)
         self.framework.observe(self.on.config_changed, self._on_config_changed)
         self.framework.observe(

@@ -4,6 +4,7 @@
 """File containing constants to be used in the charm."""
 
 PEER = "s3-integrator-peers"
+S3_RELATION = "s3"
 S3_OPTIONS = [
     "access-key",
     "secret-key",

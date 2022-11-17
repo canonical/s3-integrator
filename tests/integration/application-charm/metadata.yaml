@@ -12,6 +12,6 @@ series:
 
 requires:
   first-s3-credentials:
-    interface: s3-credentials
+    interface: s3
   second-s3-credentials:
-    interface: s3-credentials
+    interface: s3
