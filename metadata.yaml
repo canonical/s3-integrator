@@ -9,9 +9,6 @@ description: |
 summary: |
   A provider charm for s3 credentials.
 
-series:
-  - focal
-
 peers:
   s3-integrator-peers:
     interface: s3-integrator-peers
