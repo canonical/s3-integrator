@@ -113,7 +113,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             return
         relation_id = event.relation.id
 
-        bucket =  self.get_secret("app", "bucket") or event.bucket
+        bucket = self.get_secret("app", "bucket") or event.bucket
 
         logger.debug(f"Desired bucket name: {bucket}")
         assert bucket is not None
