@@ -221,7 +221,7 @@ async def test_relation_creation(ops_test: OpsTest):
     assert "secret-key" in application_data
     assert "bucket" in application_data
     # check correctness of connection parameters in the relation databag
-    assert application_data["bucket"] == "test-bucket"
+    assert application_data["bucket"] == new_bucket_name
     assert application_data["access-key"] == "test-access-key"
     assert application_data["secret-key"] == "new-test-secret-key"
     assert application_data["storage-class"] == "cinder"
