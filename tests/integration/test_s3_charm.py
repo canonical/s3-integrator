@@ -50,7 +50,6 @@ async def test_build_and_deploy(ops_test: OpsTest):
     )
     # Reduce the update_status frequency until the cluster is deployed
     async with ops_test.fast_forward():
-
         await ops_test.model.block_until(
             lambda: len(ops_test.model.applications[S3_APP_NAME].units) == 1
         )
@@ -88,13 +87,8 @@ async def test_sync_credential_action(ops_test: OpsTest):
     result = await action.wait()
     assert result.status == "failed"
 
-    action = await s3_integrator_unit.run_action(action_name="get-s3-connection-info")
-    result = await action.wait()
-    assert result.results["endpoint"] == "s3.amazonaws.com"
-
     access_key = "test-access-key"
     secret_key = "test-secret-key"
-    endpoint = "s3.amazonaws.com"
 
     action_result = await fetch_action_sync_s3_credentials(
         s3_integrator_unit, access_key=access_key, secret_key=secret_key
@@ -110,7 +104,6 @@ async def test_sync_credential_action(ops_test: OpsTest):
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
     assert connection_info["access-key"] == access_key
     assert connection_info["secret-key"] == secret_key
-    assert connection_info["endpoint"] == endpoint
 
     # checks for another update of of the credentials
     updated_secret_key = "new-test-secret-key"
@@ -127,7 +120,6 @@ async def test_sync_credential_action(ops_test: OpsTest):
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
     assert connection_info["access-key"] == access_key
     assert connection_info["secret-key"] == updated_secret_key
-    assert connection_info["endpoint"] == endpoint
 
 
 @pytest.mark.abort_on_fail
@@ -143,6 +135,7 @@ async def test_config_options(ops_test: OpsTest):
         "attributes": "a1:v1, a2:v2, a3:v3",
         "path": "/test/path_1/",
         "region": "us-east-2",
+        "endpoint": "s3.amazonaws.com",
     }
     # apply new configuration options
     await ops_test.model.applications[S3_APP_NAME].set_config(configuration_parameters)
@@ -160,6 +153,7 @@ async def test_config_options(ops_test: OpsTest):
     assert len(json.loads(configured_options["tls-ca-chain"])) == 2
     assert configured_options["region"] == "us-east-2"
     assert configured_options["path"] == "/test/path_1/"
+    assert configured_options["endpoint"] == "s3.amazonaws.com"
 
 
 @pytest.mark.abort_on_fail
