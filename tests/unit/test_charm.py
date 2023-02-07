@@ -50,6 +50,13 @@ class TestCharm(unittest.TestCase):
         self.assertEqual(peer_relation_databag["region"], "test-region")
         self.assertEqual(peer_relation_databag["endpoint"], "test-endpoint")
 
+        peer_relation_databag = self.harness.get_relation_data(
+            self.peer_relation_id, self.harness.charm.app
+        )
+
+        self.harness.update_config({"region": ""})
+        self.assertIsNot("region", peer_relation_databag)
+
     def test_set_access_and_secret_key(self):
         """Tests that secret and access keys are set."""
         self.harness.set_leader(True)
