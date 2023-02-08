@@ -85,6 +85,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 # reset previous value if present (e.g., juju model-config --reset PARAMETER)
                 if self.get_secret("app", option) is not None:
                     self.set_secret("app", option, None)
+                    update_config.update({option: ""})
                 # skip in case of default value
                 continue
             # manage comma-separated items for attributes
