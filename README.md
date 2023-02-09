@@ -7,8 +7,22 @@ An operator charm providing an integrator for connecting to S3 provides.
 
 ### Deploying the S3 Integrator
 
-```bash
-$ juju deploy ./s3-integrator_ubuntu-20.04-amd64.charm
+#### Charmhub
+```shell
+juju deploy s3-integrator --channel edge
+```
+#### From source
+```shell
+git clone https://github.com/canonical/s3-integrator.git
+cd s3-integrator/
+lxd init --auto
+lxc network set lxdbr0 ipv6.address none
+sudo snap install charmcraft --classic
+charmcraft pack
+```
+Then,
+```shell
+juju deploy ./s3-integrator_ubuntu-20.04-amd64.charm
 ```
 
 ### Adding your S3 Credentials
