@@ -15,6 +15,8 @@ juju deploy s3-integrator --channel edge
 ```shell
 git clone https://github.com/canonical/s3-integrator.git
 cd s3-integrator/
+lxd init --auto
+lxc network set lxdbr0 ipv6.address none
 sudo snap install charmcraft --classic
 charmcraft pack
 ```
