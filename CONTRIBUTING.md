@@ -55,11 +55,11 @@ pip install -r requirements.txt
 ## Testing
 
 ```shell
-tox -e fmt                      # update your code according to linting rules
-tox -e lint                     # code style
-tox -e unit                     # unit tests
-tox -e integration              # run all integration tests
-tox                             # runs 'lint' and 'unit' environments
+tox run -e format        # update your code according to linting rules
+tox run -e lint          # code style
+tox run -e unit          # unit tests
+tox run -e integration   # integration tests
+tox                      # runs 'lint' and 'unit' environments
 ```
 
 
