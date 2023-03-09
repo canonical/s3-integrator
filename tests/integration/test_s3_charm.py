@@ -11,7 +11,7 @@ import pytest
 import yaml
 from pytest_operator.plugin import OpsTest
 
-from tests.integration.helpers import (
+from .helpers import (
     fetch_action_get_connection_info,
     fetch_action_sync_s3_credentials,
     get_application_data,
