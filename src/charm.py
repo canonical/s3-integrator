@@ -64,7 +64,9 @@ class S3IntegratorCharm(ops.charm.CharmBase):
     def _on_start(self, _: StartEvent) -> None:
         """Handle the charm startup event."""
         missing_options = self.get_missing_parameters()
-        self.unit.status = ops.model.BlockedStatus(f"Missing parameters: {missing_options}")
+        logger.info(f"Missing options: {missing_options}")
+        if missing_options:
+            self.unit.status = ops.model.BlockedStatus(f"Missing parameters: {missing_options}")
 
     def _on_config_changed(self, _: ConfigChangedEvent) -> None:
         """Event handler for configuration changed events."""
