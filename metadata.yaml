@@ -1,13 +1,27 @@
-# Copyright 2021 Canonical Ltd.
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2023 Canonical Ltd.
+# See LICENSE file for licensing details.
+
 name: s3-integrator
+display_name: S3 Integrator
+summary: A provider charm for s3 credentials.
 description: |
   S3 Integrator is an integrator charm for providing S3 credentials to
   consumer charms which seek to access shared S3 data. Store the
   credentials centrally in the integrator charm and relate consumer
   charms as needed.
-summary: |
-  A provider charm for s3 credentials.
+
+  This charm supports both bare-metal/virtual-machines and K8s.
+docs: https://discourse.charmhub.io/t/s3-integrator-documentation/10947
+source: https://github.com/canonical/s3-integrator
+issues: https://github.com/canonical/s3-integrator/issues
+website:
+  - https://ubuntu.com/data
+  - https://charmhub.io/s3-integrator
+  - https://github.com/canonical/s3-integrator
+  - https://launchpad.net/~data-platform
+  - https://chat.charmhub.io/charmhub/channels/data-platform
+maintainers:
+  - Data Platform Team <data-platform@lists.launchpad.net>
 
 peers:
   s3-integrator-peers:
