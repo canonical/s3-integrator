@@ -5,9 +5,9 @@ An operator charm providing an integrator for connecting to S3 provides.
 
 ## Usage
 >[!WARNING]
-> Commands are shown by default for **juju >= 3.0**.
+> This README uses **Juju 3** commands.
 >
-> For **juju <= 2.9**, see the collapsible sections.
+> If you are using **Juju <= 2.9**, check the collapsible sections below code blocks.
 
 ### Deploying the S3 Integrator
 
@@ -32,13 +32,10 @@ juju deploy ./s3-integrator_ubuntu-20.04-amd64.charm
 ### Adding your S3 Credentials
 
 To deploy your S3 credentials to the application, run the following action:
-<details open>
-<summary><small>juju >= 3.0</small></summary>
   
 ```bash
 $ juju run s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
 ```
-</details>
 <details>
 <summary><small>juju <= 2.9</small></summary>
   
@@ -51,15 +48,15 @@ $ juju run-action s3-integrator/leader sync-s3-credentials access-key=<your_key>
 
 To configure the S3 integrator charm, you may provide the following configuration options:
 
-- endpoint: the endpoint used to connect to the object storage.
-- bucket: the bucket/container name delivered by the provider (the bucket name can be specified also on the requirer application).
-- region: the region used to connect to the object storage.
-- path: the path inside the bucket/container to store objects.
-- attributes: the custom metadata (HTTP headers).
-- s3-uri-style: the S3 protocol specific bucket path lookup type.
-- storage-class:the storage class for objects uploaded to the object storage.
-- tls-ca-chain: the complete CA chain, which can be used for HTTPS validation.
-- s3-api-version: the S3 protocol specific API signature.
+- `endpoint`: the endpoint used to connect to the object storage.
+- `bucket`: the bucket/container name delivered by the provider (the bucket name can be specified also on the requirer application).
+- `region`: the region used to connect to the object storage.
+- `path`: the path inside the bucket/container to store objects.
+- `attributes`: the custom metadata (HTTP headers).
+- `s3-uri-style`: the S3 protocol specific bucket path lookup type.
+- `storage-class`:the storage class for objects uploaded to the object storage.
+- `tls-ca-chain`: the complete CA chain, which can be used for HTTPS validation.
+- `s3-api-version`: the S3 protocol specific API signature.
 
 The only mandatory fields for the integrator are access-key secret-key and bucket.
 
@@ -72,14 +69,10 @@ Attributes needs to be specified in comma-separated format.
 ### Configuring the Integrator
 
 To retrieve the S3 credentials, run the following action:
-
-<details open>
-<summary><small>juju >= 3.0</small></summary>
   
 ```bash
 $ juju run s3-integrator/leader get-s3-credentials --wait
 ```
-</details>
 <details>
 <summary><small>juju <= 2.9</small></summary>
 
@@ -92,13 +85,9 @@ If the credentials are not set, the action will fail.
 
 To retrieve the set of connection parameters, run the following command:
 
-<details open>
-<summary><small>juju >= 3.0</small></summary>
-
 ```bash
 $ juju run s3-integrator/leader get-s3-connection-info --wait
 ```
-</details>
 <details>
 <summary><small>juju <= 2.9</small></summary>
 
@@ -112,13 +101,9 @@ $ juju run-action s3-integrator/leader get-s3-connection-info --wait
 
 Relations are supported via the `s3` interface. To create a relation:
 
-<details open>
-<summary><small>juju >= 3.0</small></summary>
-
 ```bash
 $ juju integrate s3-integrator application
 ```
-</details>
 <details>
 <summary><small>juju <= 2.9</small></summary>
 
