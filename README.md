@@ -4,6 +4,10 @@
 An operator charm providing an integrator for connecting to S3 provides.
 
 ## Usage
+>[!WARNING]
+> Commands are shown by default for **juju >= 3.0**.
+>
+> For **juju <= 2.9**, see the collapsible sections.
 
 ### Deploying the S3 Integrator
 
@@ -28,11 +32,21 @@ juju deploy ./s3-integrator_ubuntu-20.04-amd64.charm
 ### Adding your S3 Credentials
 
 To deploy your S3 credentials to the application, run the following action:
-
+<details open>
+<summary><small>juju >= 3.0</small></summary>
+  
 ```bash
-$ juju run-action s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
+$ juju run s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
 ```
-
+</details>
+<details>
+<summary><small>juju <= 2.9</small></summary>
+  
+```bash
+$ juju run s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
+```
+</details>
+  
 ### Configuring the Integrator
 
 To configure the S3 integrator charm, you may provide the following configuration options:
@@ -59,26 +73,60 @@ Attributes needs to be specified in comma-separated format.
 
 To retrieve the S3 credentials, run the following action:
 
+<details open>
+<summary><small>juju >= 3.0</small></summary>
+  
+```bash
+$ juju run s3-integrator/leader get-s3-credentials --wait
+```
+</details>
+<details>
+<summary><small>juju <= 2.9</small></summary>
+
 ```bash
 $ juju run-action s3-integrator/leader get-s3-credentials --wait
 ```
+</details>
 
 If the credentials are not set, the action will fail.
 
 To retrieve the set of connection parameters, run the following command:
 
+<details open>
+<summary><small>juju >= 3.0</small></summary>
+
+```bash
+$ juju run s3-integrator/leader get-s3-connection-info --wait
+```
+</details>
+<details>
+<summary><small>juju <= 2.9</small></summary>
+
 ```bash
 $ juju run-action s3-integrator/leader get-s3-connection-info --wait
 ```
+</details>
 
 
 ## Relations 
 
 Relations are supported via the `s3` interface. To create a relation:
 
+<details open>
+<summary><small>juju >= 3.0</small></summary>
+
+```bash
+$ juju integrate s3-integrator application
+```
+</details>
+<details>
+<summary><small>juju <= 2.9</small></summary>
+
 ```bash
 $ juju relate s3-integrator application
 ```
+</details>
+
 To remove relation a relation:
 ```bash
 $ juju remove-relation s3-integrator application
