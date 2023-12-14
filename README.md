@@ -34,13 +34,13 @@ juju deploy ./s3-integrator_ubuntu-20.04-amd64.charm
 To deploy your S3 credentials to the application, run the following action:
   
 ```bash
-$ juju run s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
+juju run s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
 ```
 <details>
-<summary><small>juju <= 2.9</small></summary>
+<summary><small><b>juju <= 2.9</b></small></summary>
   
 ```bash
-$ juju run-action s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
+juju run-action s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
 ```
 </details>
   
@@ -62,7 +62,7 @@ The only mandatory fields for the integrator are access-key secret-key and bucke
 
 In order to set ca-chain certificate use the following command:
 ```bash
-$ juju config s3-integrator tls-ca-chain="$(base64 -w0 your_ca_chain.pem)"
+juju config s3-integrator tls-ca-chain="$(base64 -w0 your_ca_chain.pem)"
 ```
 Attributes needs to be specified in comma-separated format. 
 
@@ -71,13 +71,13 @@ Attributes needs to be specified in comma-separated format.
 To retrieve the S3 credentials, run the following action:
   
 ```bash
-$ juju run s3-integrator/leader get-s3-credentials --wait
+juju run s3-integrator/leader get-s3-credentials --wait
 ```
 <details>
-<summary><small>juju <= 2.9</small></summary>
+<summary><small><b>juju <= 2.9</b></small></summary>
 
 ```bash
-$ juju run-action s3-integrator/leader get-s3-credentials --wait
+juju run-action s3-integrator/leader get-s3-credentials --wait
 ```
 </details>
 
@@ -86,13 +86,13 @@ If the credentials are not set, the action will fail.
 To retrieve the set of connection parameters, run the following command:
 
 ```bash
-$ juju run s3-integrator/leader get-s3-connection-info --wait
+juju run s3-integrator/leader get-s3-connection-info --wait
 ```
 <details>
-<summary><small>juju <= 2.9</small></summary>
+<summary><small><b>juju <= 2.9</b></small></summary>
 
 ```bash
-$ juju run-action s3-integrator/leader get-s3-connection-info --wait
+juju run-action s3-integrator/leader get-s3-connection-info --wait
 ```
 </details>
 
@@ -102,19 +102,19 @@ $ juju run-action s3-integrator/leader get-s3-connection-info --wait
 Relations are supported via the `s3` interface. To create a relation:
 
 ```bash
-$ juju integrate s3-integrator application
+juju integrate s3-integrator application
 ```
 <details>
-<summary><small>juju <= 2.9</small></summary>
+<summary><small><b>juju <= 2.9</b></small></summary>
 
 ```bash
-$ juju relate s3-integrator application
+juju relate s3-integrator application
 ```
 </details>
 
 To remove relation a relation:
 ```bash
-$ juju remove-relation s3-integrator application
+juju remove-relation s3-integrator application
 ```
 
 ## Security
