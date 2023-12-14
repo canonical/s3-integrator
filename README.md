@@ -43,7 +43,7 @@ $ juju run s3-integrator/leader sync-s3-credentials access-key=<your_key> secret
 <summary><small>juju <= 2.9</small></summary>
   
 ```bash
-$ juju run s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
+$ juju run-action s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
 ```
 </details>
   
