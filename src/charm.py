@@ -181,12 +181,12 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         # set parameters in the secrets
         self.set_secret("app", "access-key", access_key)
         self.set_secret("app", "secret-key", secret_key)
-        credentials = {"access-key": access_key, "secret-key": secret_key}
         # update relation data if the relation is present
         if len(self.s3_provider.relations) > 0:
             for relation in self.s3_provider.relations:
                 self.s3_provider.set_access_key(relation.id, access_key)
                 self.s3_provider.set_secret_key(relation.id, secret_key)
+        credentials = {"Credentials successfully updated."}
         event.set_results(credentials)
 
     def _on_peer_relation_changed(self, _: RelationChangedEvent) -> None:
@@ -211,7 +211,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         if access_key is None or secret_key is None:
             event.fail("Credentials are not set!")
             return
-        credentials = {"access-key": access_key, "secret-key": secret_key}
+        credentials = {"Credentials successfully updated."}
         event.set_results(credentials)
 
     def on_get_connection_info_action(self, event: ActionEvent):
@@ -224,6 +224,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         if len(current_configuration) == 0:
             event.fail("Credentials are not set!")
             return
+        current_configuration = {""} # TODO: check what other info should be displayed on `get connection info` to not override it.
         event.set_results(current_configuration)
 
     @staticmethod
