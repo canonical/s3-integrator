@@ -139,7 +139,7 @@ LIBAPI = 0
 
 # Increment this PATCH version before using `charmcraft publish-lib` or reset
 # to 0 if you are raising the major API version
-LIBPATCH = 2
+LIBPATCH = 3
 
 logger = logging.getLogger(__name__)
 
@@ -390,6 +390,17 @@ class S3Provider(Object):
         """
         self.update_connection_info(relation_id, {"secret-key": secret_key})
 
+    def set_service_account(self, relation_id: int, service_account: str) -> None:
+        """Sets the service account value in application databag.
+
+        This function writes in the application data bag, therefore,
+        only the leader unit can call it.
+        Args:
+            relation_id: the identifier for a particular relation.
+            service_account: the value of the service account.
+        """
+        self.update_connection_info(relation_id, {"service-account": service_account})
+
     def set_path(self, relation_id: int, path: str) -> None:
         """Sets the path value in application databag.
 
@@ -504,6 +515,11 @@ class S3Event(RelationEvent):
     def secret_key(self) -> Optional[str]:
         """Returns the secret key."""
         return self.relation.data[self.relation.app].get("secret-key")
+
+    @property
+    def service_account(self) -> Optional[str]:
+        """Returns the service account."""
+        return self.relation.data[self.relation.app].get("service-account")
 
     @property
     def path(self) -> Optional[str]:

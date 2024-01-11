@@ -17,7 +17,7 @@ import ops.main
 import ops.model
 from charms.data_platform_libs.v0.s3 import CredentialRequestedEvent, S3Provider
 from ops.charm import ActionEvent, ConfigChangedEvent, RelationChangedEvent, StartEvent
-from ops.model import ActiveStatus, BlockedStatus
+from ops.model import ActiveStatus
 
 from constants import KEYS_LIST, PEER, S3_LIST_OPTIONS, S3_MANDATORY_OPTIONS, S3_OPTIONS
 
@@ -63,10 +63,11 @@ class S3IntegratorCharm(ops.charm.CharmBase):
 
     def _on_start(self, _: StartEvent) -> None:
         """Handle the charm startup event."""
-        missing_options = self.get_missing_parameters()
-        logger.info(f"Missing options: {missing_options}")
-        if missing_options:
-            self.unit.status = ops.model.BlockedStatus(f"Missing parameters: {missing_options}")
+        if self.is_missing_parameters():
+            logger.info("Missing options: (ACCESS_KEY and SECRET_KEY) OR SERVICE_ACCOUNT")
+            self.unit.status = ops.model.BlockedStatus(
+                "Missing options: (ACCESS_KEY and SECRET_KEY) OR SERVICE_ACCOUNT"
+            )
 
     def _on_config_changed(self, _: ConfigChangedEvent) -> None:
         """Event handler for configuration changed events."""
@@ -161,13 +162,16 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         else:
             raise RuntimeError("Unknown secret scope.")
 
-    def get_missing_parameters(self) -> List[str]:
-        """Returns the missing mandatory parameters that are not stored in the peer relation."""
-        missing_options = []
-        for config_option in S3_MANDATORY_OPTIONS:
-            if not self.get_secret("app", config_option):
-                missing_options.append(config_option)
-        return missing_options
+    def is_missing_parameters(self) -> List[str]:
+        """Returns the missing mandatory parameters that are not stored in the peer relation.
+
+        This method only checks for the missing keys.
+        """
+        if (
+            not self.get_secret("app", "access-key") and not self.get_secret("app", "secret-key")
+        ) or (not self.get_secret("app", "service-account")):
+            return True
+        return False
 
     def _on_sync_s3_credentials(self, event: ops.charm.ActionEvent) -> None:
         """Handle a user synchronizing their S3 credentials to the charm."""
@@ -176,9 +180,14 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             event.fail("The action can be run only on leader unit.")
             return
         # read parameters from the event
-        access_key = event.params["access-key"]
-        secret_key = event.params["secret-key"]
+        access_key = event.params.get("access-key")
+        secret_key = event.params.get("secret-key")
+        service_account = event.params.get("service-account")
+        if (not access_key or not secret_key) and not service_account:
+            event.fail("Missing parameters!")
+            return
         # set parameters in the secrets
+<<<<<<< HEAD
         self.set_secret("app", "access-key", access_key)
         self.set_secret("app", "secret-key", secret_key)
         # update relation data if the relation is present
@@ -187,16 +196,32 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 self.s3_provider.set_access_key(relation.id, access_key)
                 self.s3_provider.set_secret_key(relation.id, secret_key)
         credentials = {"ok": "Credentials successfully updated."}
+=======
+        if access_key:
+            self.set_secret("app", "access-key", access_key)
+            self.set_secret("app", "secret-key", secret_key)
+            credentials = {"access-key": access_key, "secret-key": secret_key}
+        else:
+            self.set_secret("app", "service-account", service_account)
+            credentials = {"service-account": service_account}
+        # update relation data if the relation is present
+        if len(self.s3_provider.relations) > 0:
+            for relation in self.s3_provider.relations:
+                if access_key:
+                    self.s3_provider.set_access_key(relation.id, access_key)
+                    self.s3_provider.set_secret_key(relation.id, secret_key)
+                else:
+                    self.s3_provider.set_service_account(relation.id, service_account)
+>>>>>>> 7efcf3f (Add service account as extra option in sync-s3-credentials)
         event.set_results(credentials)
 
     def _on_peer_relation_changed(self, _: RelationChangedEvent) -> None:
         """Handle the peer relation changed event."""
-        # Check if mandatory configuration options are present and change the status
-        missing_options = self.get_missing_parameters()
-        logger.info(f"Missing options: {missing_options}")
-        if missing_options:
-            self.unit.status = BlockedStatus(f"Missing parameters: {missing_options}")
-            return
+        if self.is_missing_parameters():
+            logger.info("Missing options: (ACCESS_KEY and SECRET_KEY) OR SERVICE_ACCOUNT")
+            self.unit.status = ops.model.BlockedStatus(
+                "Missing options: (ACCESS_KEY and SECRET_KEY) OR SERVICE_ACCOUNT"
+            )
         self.unit.status = ActiveStatus()
 
     @property
@@ -208,10 +233,17 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         """Handle the action `get-credential`."""
         access_key = self.get_secret("app", "access-key")
         secret_key = self.get_secret("app", "secret-key")
-        if access_key is None or secret_key is None:
+        service_account = self.get_secret("app", "service-account")
+        if (access_key is None or secret_key is None) and service_account is None:
             event.fail("Credentials are not set!")
             return
+<<<<<<< HEAD
         credentials = {"ok": "Credentials are configured."}
+=======
+        credentials = {"service-account": service_account}
+        if access_key:
+            credentials = {"access-key": access_key, "secret-key": secret_key}
+>>>>>>> 7efcf3f (Add service account as extra option in sync-s3-credentials)
         event.set_results(credentials)
 
     def on_get_connection_info_action(self, event: ActionEvent):

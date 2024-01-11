@@ -110,3 +110,30 @@ class TestCharm(unittest.TestCase):
                 "endpoint": "test-endpoint",
             }
         )
+
+    def test_set_service_account(self):
+        """Tests that service account is set."""
+        self.harness.set_leader(True)
+        action_event = mock.Mock()
+        action_event.params = {"service-account": "test-service-account"}
+        self.harness.charm._on_sync_s3_credentials(action_event)
+
+        service_account = self.harness.charm.app_peer_data["service-account"]
+        # verify app data is updated and results are reported to user
+        self.assertEqual("test-service-account", service_account)
+
+        action_event.set_results.assert_called_once_with(
+            {"service-account": "test-service-account"}
+        )
+
+    def test_get_service_account(self):
+        """Tests that service account is retrieved correctly."""
+        self.harness.set_leader(True)
+        event = mock.Mock()
+        self.harness.charm.on_get_connection_info_action(event)
+        event.fail.assert_called()
+
+        self.harness.charm.app_peer_data["service-account"] = "test-service-account"
+
+        self.harness.charm.on_get_connection_info_action(event)
+        event.set_results.assert_called_with({"service-account": "test-service-account"})
