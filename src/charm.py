@@ -19,7 +19,7 @@ from charms.data_platform_libs.v0.s3 import CredentialRequestedEvent, S3Provider
 from ops.charm import ActionEvent, ConfigChangedEvent, RelationChangedEvent, StartEvent
 from ops.model import ActiveStatus, BlockedStatus
 
-from constants import PEER, S3_LIST_OPTIONS, S3_MANDATORY_OPTIONS, S3_OPTIONS
+from constants import PEER, S3_LIST_OPTIONS, S3_MANDATORY_OPTIONS, S3_OPTIONS, KEYS_LIST
 
 logger = logging.getLogger(__name__)
 
@@ -219,12 +219,16 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         current_configuration = {}
         for option in S3_OPTIONS:
             if self.get_secret("app", option) is not None:
-                current_configuration[option] = self.get_secret("app", option)
+                if self.get_secret("app", option) in KEYS_LIST:
+                    current_configuration[option] = "************" # Hide keys from configuration
+                else:
+                    current_configuration[option] = self.get_secret("app", option)
+                    
         # emit event fail if no option is set in the charm
         if len(current_configuration) == 0:
             event.fail("Credentials are not set!")
             return
-        current_configuration = {""} # TODO: check what other info should be displayed on `get connection info` to not override it.
+
         event.set_results(current_configuration)
 
     @staticmethod

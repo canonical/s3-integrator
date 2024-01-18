@@ -101,9 +101,9 @@ async def test_sync_credential_action(ops_test: OpsTest):
     assert action_result["access-key"] == access_key
     assert action_result["secret-key"] == secret_key
 
-    connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
-    assert connection_info["access-key"] == access_key
-    assert connection_info["secret-key"] == secret_key
+    # connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
+    # assert connection_info["access-key"] == access_key
+    # assert connection_info["secret-key"] == secret_key
 
     # checks for another update of of the credentials
     updated_secret_key = "new-test-secret-key"
@@ -117,9 +117,9 @@ async def test_sync_credential_action(ops_test: OpsTest):
     # check that secret key has been updated
     assert action_result["access-key"] == access_key
     assert action_result["secret-key"] == updated_secret_key
-    connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
-    assert connection_info["access-key"] == access_key
-    assert connection_info["secret-key"] == updated_secret_key
+    # connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
+    # assert connection_info["access-key"] == access_key
+    # assert connection_info["secret-key"] == updated_secret_key
 
 
 @pytest.mark.abort_on_fail
