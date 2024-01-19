@@ -115,7 +115,7 @@ async def test_sync_credential_action(ops_test: OpsTest):
 
     # check that secret key has been updated
     assert "Credentials successfully updated." in action_result
-    
+
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
     assert connection_info["access-key"] == "************"
     assert connection_info["secret-key"] == "************"

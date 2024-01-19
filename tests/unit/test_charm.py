@@ -70,9 +70,7 @@ class TestCharm(unittest.TestCase):
         self.assertEqual("test-access-key", access_key)
         self.assertEqual("test-secret-key", secret_key)
 
-        action_event.set_results.assert_called_once_with(
-            {"Credentials successfully updated."}
-        )
+        action_event.set_results.assert_called_once_with({"Credentials successfully updated."})
 
     def test_get_s3_credentials(self):
         """Tests that secret and access key are retrieved correctly."""
@@ -85,9 +83,7 @@ class TestCharm(unittest.TestCase):
         self.harness.charm.app_peer_data["secret-key"] = "test-secret-key"
 
         self.harness.charm.on_get_credentials_action(event)
-        event.set_results.assert_called_with(
-            {"Credentials are configured."}
-        )
+        event.set_results.assert_called_with({"Credentials are configured."})
 
     def test_get_connection_info(self):
         """Tests that s3 connection parameters are retrieved correctly."""
