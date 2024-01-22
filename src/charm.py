@@ -186,7 +186,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             for relation in self.s3_provider.relations:
                 self.s3_provider.set_access_key(relation.id, access_key)
                 self.s3_provider.set_secret_key(relation.id, secret_key)
-        credentials = {"Credentials successfully updated."}
+        credentials = {"ok": "Credentials successfully updated."}
         event.set_results(credentials)
 
     def _on_peer_relation_changed(self, _: RelationChangedEvent) -> None:
@@ -211,7 +211,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         if access_key is None or secret_key is None:
             event.fail("Credentials are not set!")
             return
-        credentials = {"Credentials are configured."}
+        credentials = {"ok": "Credentials are configured."}
         event.set_results(credentials)
 
     def on_get_connection_info_action(self, event: ActionEvent):
@@ -219,7 +219,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         current_configuration = {}
         for option in S3_OPTIONS:
             if self.get_secret("app", option) is not None:
-                if self.get_secret("app", option) in KEYS_LIST:
+                if option in KEYS_LIST:
                     current_configuration[option] = "************"  # Hide keys from configuration
                 else:
                     current_configuration[option] = self.get_secret("app", option)

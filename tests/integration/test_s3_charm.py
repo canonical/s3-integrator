@@ -98,7 +98,7 @@ async def test_sync_credential_action(ops_test: OpsTest):
     async with ops_test.fast_forward():
         await ops_test.model.wait_for_idle(apps=[S3_APP_NAME], status="active")
 
-    assert "Credentials successfully updated." in action_result
+    assert action_result["ok"] == "Credentials successfully updated."
 
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
     assert connection_info["access-key"] == "************"
@@ -114,7 +114,7 @@ async def test_sync_credential_action(ops_test: OpsTest):
         await ops_test.model.wait_for_idle(apps=[S3_APP_NAME], status="active")
 
     # check that secret key has been updated
-    assert "Credentials successfully updated." in action_result
+    assert action_result["ok"] == "Credentials successfully updated."
 
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
     assert connection_info["access-key"] == "************"
