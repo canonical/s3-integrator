@@ -91,7 +91,7 @@ async def test_sync_credential_action(ops_test: OpsTest):
     secret_key = "test-secret-key"
 
     action_result = await fetch_action_sync_s3_credentials(
-        s3_integrator_unit, access_key=access_key, secret_key=secret_key, service_account="abc"
+        s3_integrator_unit, access_key=access_key, secret_key=secret_key
     )
 
     # test the correct status of the charm
@@ -128,10 +128,11 @@ async def test_sync_credential_action(ops_test: OpsTest):
     )
 
     assert not action_result.get("access-key") and not action_result.get("secret-key")
-    assert action_result["service-account"] == service_account
+    assert action_result["ok"] == "Credentials successfully updated."
+
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
     assert not action_result.get("access-key") and not action_result.get("secret-key")
-    assert action_result["service-account"] == service_account
+    assert action_result["service-account"] == "************"
 
 
 @pytest.mark.abort_on_fail
