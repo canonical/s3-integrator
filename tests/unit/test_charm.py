@@ -85,7 +85,22 @@ class TestCharm(unittest.TestCase):
         self.harness.charm.app_peer_data["secret-key"] = "test-secret-key"
 
         self.harness.charm.on_get_credentials_action(event)
-        event.set_results.assert_called_with({"ok": "Credentials are configured."})
+        event.set_results.assert_called_with(
+            {"ok": "Credentials [access-key,secret-key] are configured."}
+        )
+
+        self.harness.charm.app_peer_data["service-account"] = "test-service-account"
+        self.harness.charm.on_get_credentials_action(event)
+        event.set_results.assert_called_with(
+            {"ok": "Credentials [access-key,secret-key,service-account] are configured."}
+        )
+
+        del self.harness.charm.app_peer_data["access-key"]
+        del self.harness.charm.app_peer_data["secret-key"]
+        self.harness.charm.on_get_credentials_action(event)
+        event.set_results.assert_called_with(
+            {"ok": "Credentials [service-account] are configured."}
+        )
 
     def test_get_connection_info(self):
         """Tests that s3 connection parameters are retrieved correctly."""
@@ -123,7 +138,7 @@ class TestCharm(unittest.TestCase):
         self.assertEqual("test-service-account", service_account)
 
         action_event.set_results.assert_called_once_with(
-            {"service-account": "test-service-account"}
+            {"ok": "Credentials successfully updated."}
         )
 
     def test_get_service_account(self):
@@ -136,4 +151,4 @@ class TestCharm(unittest.TestCase):
         self.harness.charm.app_peer_data["service-account"] = "test-service-account"
 
         self.harness.charm.on_get_connection_info_action(event)
-        event.set_results.assert_called_with({"service-account": "test-service-account"})
+        event.set_results.assert_called_with({"service-account": "************"})

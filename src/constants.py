@@ -19,4 +19,4 @@ S3_OPTIONS = [
     "tls-ca-chain",
 ]
 S3_LIST_OPTIONS = ["attributes", "tls-ca-chain"]
-KEYS_LIST = ["access-key", "secret-key"]
+KEYS_LIST = ["access-key", "secret-key", "service-account"]

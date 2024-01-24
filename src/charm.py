@@ -19,7 +19,7 @@ from charms.data_platform_libs.v0.s3 import CredentialRequestedEvent, S3Provider
 from ops.charm import ActionEvent, ConfigChangedEvent, RelationChangedEvent, StartEvent
 from ops.model import ActiveStatus
 
-from constants import KEYS_LIST, PEER, S3_LIST_OPTIONS, S3_MANDATORY_OPTIONS, S3_OPTIONS
+from constants import KEYS_LIST, PEER, S3_LIST_OPTIONS, S3_OPTIONS
 
 logger = logging.getLogger(__name__)
 
@@ -187,23 +187,11 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             event.fail("Missing parameters!")
             return
         # set parameters in the secrets
-<<<<<<< HEAD
-        self.set_secret("app", "access-key", access_key)
-        self.set_secret("app", "secret-key", secret_key)
-        # update relation data if the relation is present
-        if len(self.s3_provider.relations) > 0:
-            for relation in self.s3_provider.relations:
-                self.s3_provider.set_access_key(relation.id, access_key)
-                self.s3_provider.set_secret_key(relation.id, secret_key)
-        credentials = {"ok": "Credentials successfully updated."}
-=======
         if access_key:
             self.set_secret("app", "access-key", access_key)
             self.set_secret("app", "secret-key", secret_key)
-            credentials = {"access-key": access_key, "secret-key": secret_key}
         else:
             self.set_secret("app", "service-account", service_account)
-            credentials = {"service-account": service_account}
         # update relation data if the relation is present
         if len(self.s3_provider.relations) > 0:
             for relation in self.s3_provider.relations:
@@ -212,8 +200,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                     self.s3_provider.set_secret_key(relation.id, secret_key)
                 else:
                     self.s3_provider.set_service_account(relation.id, service_account)
->>>>>>> 7efcf3f (Add service account as extra option in sync-s3-credentials)
-        event.set_results(credentials)
+        event.set_results({"ok": "Credentials successfully updated."})
 
     def _on_peer_relation_changed(self, _: RelationChangedEvent) -> None:
         """Handle the peer relation changed event."""
@@ -237,13 +224,13 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         if (access_key is None or secret_key is None) and service_account is None:
             event.fail("Credentials are not set!")
             return
-<<<<<<< HEAD
-        credentials = {"ok": "Credentials are configured."}
-=======
-        credentials = {"service-account": service_account}
+        # We have the s3 credentials configured, now figure out what is present
+        params_configured = []
         if access_key:
-            credentials = {"access-key": access_key, "secret-key": secret_key}
->>>>>>> 7efcf3f (Add service account as extra option in sync-s3-credentials)
+            params_configured += ["access-key", "secret-key"]
+        if service_account:
+            params_configured += ["service-account"]
+        credentials = {"ok": f"Credentials [{','.join(params_configured)}] are configured."}
         event.set_results(credentials)
 
     def on_get_connection_info_action(self, event: ActionEvent):
