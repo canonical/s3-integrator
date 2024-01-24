@@ -9,7 +9,15 @@ sync-s3-credentials:
     secret-key:
       type: string
       description: Access Key Secret (password) for connecting to the object storage.
-  required: [access-key, secret-key]
+    service-account:
+      type: string
+      description: |
+        Base64 containing service account file content.
+        This field MUST be set if the access-key and secret-key are not set.
+        If all three are set, then access-key / secret-key take precedence.
+        Set it with:
+            juju run ... service-account="$(cat service-account.json | base64 -w0)"
+
 
 get-s3-credentials:
   description: Returns S3 credentials (access-key and secret-key)

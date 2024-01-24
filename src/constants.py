@@ -7,6 +7,7 @@ PEER = "s3-integrator-peers"
 S3_OPTIONS = [
     "access-key",
     "secret-key",
+    "service-account",
     "region",
     "storage-class",
     "attributes",
@@ -17,9 +18,5 @@ S3_OPTIONS = [
     "s3-uri-style",
     "tls-ca-chain",
 ]
-S3_MANDATORY_OPTIONS = [
-    "access-key",
-    "secret-key",
-]
 S3_LIST_OPTIONS = ["attributes", "tls-ca-chain"]
-KEYS_LIST = ["access-key", "secret-key"]
+KEYS_LIST = ["access-key", "secret-key", "service-account"]

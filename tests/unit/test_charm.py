@@ -85,7 +85,22 @@ class TestCharm(unittest.TestCase):
         self.harness.charm.app_peer_data["secret-key"] = "test-secret-key"
 
         self.harness.charm.on_get_credentials_action(event)
-        event.set_results.assert_called_with({"ok": "Credentials are configured."})
+        event.set_results.assert_called_with(
+            {"ok": "Credentials [access-key,secret-key] are configured."}
+        )
+
+        self.harness.charm.app_peer_data["service-account"] = "test-service-account"
+        self.harness.charm.on_get_credentials_action(event)
+        event.set_results.assert_called_with(
+            {"ok": "Credentials [access-key,secret-key,service-account] are configured."}
+        )
+
+        del self.harness.charm.app_peer_data["access-key"]
+        del self.harness.charm.app_peer_data["secret-key"]
+        self.harness.charm.on_get_credentials_action(event)
+        event.set_results.assert_called_with(
+            {"ok": "Credentials [service-account] are configured."}
+        )
 
     def test_get_connection_info(self):
         """Tests that s3 connection parameters are retrieved correctly."""
@@ -110,3 +125,30 @@ class TestCharm(unittest.TestCase):
                 "endpoint": "test-endpoint",
             }
         )
+
+    def test_set_service_account(self):
+        """Tests that service account is set."""
+        self.harness.set_leader(True)
+        action_event = mock.Mock()
+        action_event.params = {"service-account": "test-service-account"}
+        self.harness.charm._on_sync_s3_credentials(action_event)
+
+        service_account = self.harness.charm.app_peer_data["service-account"]
+        # verify app data is updated and results are reported to user
+        self.assertEqual("test-service-account", service_account)
+
+        action_event.set_results.assert_called_once_with(
+            {"ok": "Credentials successfully updated."}
+        )
+
+    def test_get_service_account(self):
+        """Tests that service account is retrieved correctly."""
+        self.harness.set_leader(True)
+        event = mock.Mock()
+        self.harness.charm.on_get_connection_info_action(event)
+        event.fail.assert_called()
+
+        self.harness.charm.app_peer_data["service-account"] = "test-service-account"
+
+        self.harness.charm.on_get_connection_info_action(event)
+        event.set_results.assert_called_with({"service-account": "************"})

@@ -103,6 +103,7 @@ async def test_sync_credential_action(ops_test: OpsTest):
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
     assert connection_info["access-key"] == "************"
     assert connection_info["secret-key"] == "************"
+    assert not action_result.get("service-account")
 
     # checks for another update of of the credentials
     updated_secret_key = "new-test-secret-key"
@@ -119,6 +120,19 @@ async def test_sync_credential_action(ops_test: OpsTest):
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
     assert connection_info["access-key"] == "************"
     assert connection_info["secret-key"] == "************"
+
+    # switch to a service account
+    service_account = "eyJhIjogImIifQo="  # sa = {"a": "b"}
+    action_result = await fetch_action_sync_s3_credentials(
+        s3_integrator_unit, access_key="", secret_key="", service_account=service_account
+    )
+
+    assert not action_result.get("access-key") and not action_result.get("secret-key")
+    assert action_result["ok"] == "Credentials successfully updated."
+
+    connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
+    assert not action_result.get("access-key") and not action_result.get("secret-key")
+    assert action_result["service-account"] == "************"
 
 
 @pytest.mark.abort_on_fail
