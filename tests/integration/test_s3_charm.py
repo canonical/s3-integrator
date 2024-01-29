@@ -98,12 +98,11 @@ async def test_sync_credential_action(ops_test: OpsTest):
     async with ops_test.fast_forward():
         await ops_test.model.wait_for_idle(apps=[S3_APP_NAME], status="active")
 
-    assert action_result["access-key"] == access_key
-    assert action_result["secret-key"] == secret_key
+    assert action_result["ok"] == "Credentials successfully updated."
 
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
-    assert connection_info["access-key"] == access_key
-    assert connection_info["secret-key"] == secret_key
+    assert connection_info["access-key"] == "************"
+    assert connection_info["secret-key"] == "************"
 
     # checks for another update of of the credentials
     updated_secret_key = "new-test-secret-key"
@@ -115,11 +114,11 @@ async def test_sync_credential_action(ops_test: OpsTest):
         await ops_test.model.wait_for_idle(apps=[S3_APP_NAME], status="active")
 
     # check that secret key has been updated
-    assert action_result["access-key"] == access_key
-    assert action_result["secret-key"] == updated_secret_key
+    assert action_result["ok"] == "Credentials successfully updated."
+
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
-    assert connection_info["access-key"] == access_key
-    assert connection_info["secret-key"] == updated_secret_key
+    assert connection_info["access-key"] == "************"
+    assert connection_info["secret-key"] == "************"
 
 
 @pytest.mark.abort_on_fail
@@ -175,7 +174,7 @@ async def test_relation_creation(ops_test: OpsTest):
     application_data = await get_application_data(ops_test, APPLICATION_APP_NAME, FIRST_RELATION)
     # check if the different parameters correspond to expected ones.
     relation_id = relation_data[0]["relation-id"]
-    # check correcteness for some fields
+    # check correctness for some fields
     assert "access-key" in application_data
     assert "secret-key" in application_data
     assert "bucket" in application_data

@@ -22,3 +22,4 @@ S3_MANDATORY_OPTIONS = [
     "secret-key",
 ]
 S3_LIST_OPTIONS = ["attributes", "tls-ca-chain"]
+KEYS_LIST = ["access-key", "secret-key"]

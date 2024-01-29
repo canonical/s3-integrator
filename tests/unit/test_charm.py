@@ -1,4 +1,4 @@
-# Copyright 2022 Canonical Ltd.
+# Copyright 2024 Canonical Ltd.
 # See LICENSE file for licensing details.
 
 import unittest
@@ -71,7 +71,7 @@ class TestCharm(unittest.TestCase):
         self.assertEqual("test-secret-key", secret_key)
 
         action_event.set_results.assert_called_once_with(
-            {"access-key": "test-access-key", "secret-key": "test-secret-key"}
+            {"ok": "Credentials successfully updated."}
         )
 
     def test_get_s3_credentials(self):
@@ -85,9 +85,7 @@ class TestCharm(unittest.TestCase):
         self.harness.charm.app_peer_data["secret-key"] = "test-secret-key"
 
         self.harness.charm.on_get_credentials_action(event)
-        event.set_results.assert_called_with(
-            {"access-key": "test-access-key", "secret-key": "test-secret-key"}
-        )
+        event.set_results.assert_called_with({"ok": "Credentials are configured."})
 
     def test_get_connection_info(self):
         """Tests that s3 connection parameters are retrieved correctly."""
@@ -97,7 +95,7 @@ class TestCharm(unittest.TestCase):
         self.harness.charm.app_peer_data["secret-key"] = "test-secret-key"
         self.harness.charm.on_get_connection_info_action(event)
         event.set_results.assert_called_with(
-            {"access-key": "test-access-key", "secret-key": "test-secret-key"}
+            {"access-key": "************", "secret-key": "************"}
         )
         # update some configuration parameters
         self.harness.update_config({"region": "test-region"})
@@ -106,8 +104,8 @@ class TestCharm(unittest.TestCase):
         self.harness.charm.on_get_connection_info_action(event)
         event.set_results.assert_called_with(
             {
-                "access-key": "test-access-key",
-                "secret-key": "test-secret-key",
+                "access-key": "************",
+                "secret-key": "************",
                 "region": "test-region",
                 "endpoint": "test-endpoint",
             }
