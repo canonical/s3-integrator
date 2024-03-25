@@ -36,6 +36,7 @@ FIRST_RELATION = "first-s3-credentials"
 SECOND_RELATION = "second-s3-credentials"
 
 
+@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
 async def test_build_and_deploy(ops_test: OpsTest):
@@ -79,6 +80,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
     assert len(ops_test.model.applications[APPLICATION_APP_NAME].units) == 1
 
 
+@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_sync_credential_action(ops_test: OpsTest):
     """Tests the correct output of actions."""
@@ -121,6 +123,7 @@ async def test_sync_credential_action(ops_test: OpsTest):
     assert connection_info["secret-key"] == "************"
 
 
+@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_config_options(ops_test: OpsTest):
     """Tests the correct handling of configuration parameters."""
@@ -155,6 +158,7 @@ async def test_config_options(ops_test: OpsTest):
     assert configured_options["endpoint"] == "s3.amazonaws.com"
 
 
+@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_relation_creation(ops_test: OpsTest):
     """Relate charms and wait for the expected changes in status."""
@@ -225,6 +229,7 @@ async def test_relation_creation(ops_test: OpsTest):
     assert application_data["path"] == "/test/path_1/"
 
 
+@pytest.mark.group(1)
 async def test_relation_broken(ops_test: OpsTest):
     """Remove relation and wait for the expected changes in status."""
     # Remove relations
