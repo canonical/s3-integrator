@@ -33,17 +33,16 @@ jobs:
         run: tox run -e unit
 
   build:
+    strategy:
+      matrix:
+        path:
+          - .
+          - tests/integration/application-charm
     name: Build charm
-    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v13.0.0
+    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v12.7.2
     with:
+      path-to-charm-directory: ${{ matrix.path }}
       cache: true
-
-  build-test:
-    name: Build test charm
-    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v13.0.0
-    with:
-      cache: true
-      path-to-charm-directory: tests/integration/application-charm
 
   integration-test:
     strategy:
@@ -59,8 +58,8 @@ jobs:
     name: Integration test charm | ${{ matrix.juju.agent }} | ${{ matrix.cloud }}
     needs:
       - lint
+      - unit-test
       - build
-      - build-test
     uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v13.0.0
     with:
       artifact-prefix: packed-charm-cache-true
