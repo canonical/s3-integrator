@@ -4,12 +4,18 @@ type: charm
 parts:
   charm:
     build-packages: [git]
+    override-pull: |
+      craftctl default
+      if [[ ! -f requirements.txt ]]
+      then
+          echo 'ERROR: Use "tox run -e build-dev" instead of calling "charmcraft pack" directly' >&2
+          exit 1
+      fi
+    charm-strict-dependencies: true
 bases:
-  - build-on:
-    - name: ubuntu
-      channel: '22.04'
-      architectures: [amd64]
-    run-on:
-    - name: ubuntu
-      channel: '22.04'
-      architectures: [amd64]
+  - name: ubuntu
+    channel: "22.04"
+    architectures: [amd64]
+  - name: ubuntu
+    channel: "22.04"
+    architectures: [arm64]
