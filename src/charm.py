@@ -40,7 +40,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         )
         self.framework.observe(self.on[PEER].relation_changed, self._on_peer_relation_changed)
 
-        self.framework.observe(self.s3_provider.on[S3_RELATION].relation_created, self._on_new_app)
+        self.framework.observe(self.on[S3_RELATION].relation_created, self._on_new_app)
 
         # actions
         self.framework.observe(self.on.sync_s3_credentials_action, self._on_sync_s3_credentials)
