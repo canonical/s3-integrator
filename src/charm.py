@@ -116,7 +116,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 self.set_secret("app", option, self.config[option])
         return update_config
 
-    def _on_new_app(self, event: EventBase) -> None:
+    def _on_new_app(self, event) -> None:
         """Event handler for s3-credentials-created events."""
         self.s3_provider.update_connection_info(event.relation.id, self._current_configs)
 
