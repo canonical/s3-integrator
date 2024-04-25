@@ -24,18 +24,26 @@ from constants import KEYS_LIST, PEER, S3_LIST_OPTIONS, S3_MANDATORY_OPTIONS, S3
 logger = logging.getLogger(__name__)
 
 
+S3_RELATION = "s3-credentials"
+
+
 class S3IntegratorCharm(ops.charm.CharmBase):
     """Charm for s3 integrator service."""
 
     def __init__(self, *args) -> None:
         super().__init__(*args)
-        self.s3_provider = S3Provider(self, "s3-credentials")
+        self.s3_provider = S3Provider(self, S3_RELATION)
         self.framework.observe(self.on.start, self._on_start)
         self.framework.observe(self.on.config_changed, self._on_config_changed)
         self.framework.observe(
             self.s3_provider.on.credentials_requested, self._on_credential_requested
         )
         self.framework.observe(self.on[PEER].relation_changed, self._on_peer_relation_changed)
+
+        self.framework.observe(
+            self.s3_provider.on[S3_RELATION].relation_created, self._on_new_app
+        )
+
         # actions
         self.framework.observe(self.on.sync_s3_credentials_action, self._on_sync_s3_credentials)
         self.framework.observe(self.on.get_s3_credentials_action, self.on_get_credentials_action)
@@ -68,8 +76,9 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         if missing_options:
             self.unit.status = ops.model.BlockedStatus(f"Missing parameters: {missing_options}")
 
-    def _on_config_changed(self, _: ConfigChangedEvent) -> None:
-        """Event handler for configuration changed events."""
+    @property
+    def _current_configs(self) -> dict[str, str]:
+        """Returns the current configuration of s3-integrator."""
         # Only execute in the unit leader
         if not self.unit.is_leader():
             return
@@ -105,10 +114,17 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             else:
                 update_config.update({option: self.config[option]})
                 self.set_secret("app", option, self.config[option])
+        return update_config
 
+    def _on_new_app(self, event: EventBase) -> None:
+        """Event handler for s3-credentials-created events."""
+        self.s3_provider.update_connection_info(event.relation.id, self._current_configs)
+
+    def _on_config_changed(self, _: ConfigChangedEvent) -> None:
+        """Event handler for configuration changed events."""
         if len(self.s3_provider.relations) > 0:
             for relation in self.s3_provider.relations:
-                self.s3_provider.update_connection_info(relation.id, update_config)
+                self.s3_provider.update_connection_info(relation.id, self._current_configs)
 
     def _on_credential_requested(self, event: CredentialRequestedEvent):
         """Handle the `credential-requested` event."""
