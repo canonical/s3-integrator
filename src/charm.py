@@ -68,7 +68,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         if missing_options:
             self.unit.status = ops.model.BlockedStatus(f"Missing parameters: {missing_options}")
 
-    def _on_config_changed(self, _: ConfigChangedEvent) -> None:
+    def _on_config_changed(self, _: ConfigChangedEvent) -> None:  # noqa: C901
         """Event handler for configuration changed events."""
         # Only execute in the unit leader
         if not self.unit.is_leader():
@@ -102,9 +102,12 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 )
                 update_config.update({option: ca_chain})
                 self.set_secret("app", option, json.dumps(ca_chain))
+            elif option == "experimental-delete-older-than-days" and self.config[option] != "":
+                update_config.update({"delete-older-than-days": str(self.config[option])})
+                self.set_secret("app", "delete-older-than-days", str(self.config[option]))
             else:
-                update_config.update({option: self.config[option]})
-                self.set_secret("app", option, self.config[option])
+                update_config.update({option: str(self.config[option])})
+                self.set_secret("app", option, str(self.config[option]))
 
         if len(self.s3_provider.relations) > 0:
             for relation in self.s3_provider.relations:

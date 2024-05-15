@@ -16,6 +16,7 @@ S3_OPTIONS = [
     "s3-api-version",
     "s3-uri-style",
     "tls-ca-chain",
+    "delete-older-than-days",
 ]
 S3_MANDATORY_OPTIONS = [
     "access-key",

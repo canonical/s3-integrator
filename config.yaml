@@ -36,3 +36,14 @@ options:
     type: string
     description: S3 protocol specific API signature.
     default: ''
+  experimental-delete-older-than-days:
+    type: string
+    description: |
+      Full backups can be retained for a number of days. The removal of expired
+      backups happens imediatelly after finishing the first successful backup after
+      retention period.
+      When full backup expires, the all differential and incremental backups which
+      depends on this full backup also expires.
+      This option is EXPRERIMENTAL.
+      Allowed values are: from 1 to 9999999.
+    default: ''

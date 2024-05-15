@@ -50,6 +50,7 @@ To configure the S3 integrator charm, you may provide the following configuratio
 - storage-class:the storage class for objects uploaded to the object storage.
 - tls-ca-chain: the complete CA chain, which can be used for HTTPS validation.
 - s3-api-version: the S3 protocol specific API signature.
+- experimental-delete-older-than-days: the amount of day after which backups going to be deleted. EXPERIMENTAL option.
 
 The only mandatory fields for the integrator are access-key secret-key and bucket.
 
