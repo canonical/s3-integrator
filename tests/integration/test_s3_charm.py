@@ -138,7 +138,7 @@ async def test_config_options(ops_test: OpsTest):
         "path": "/test/path_1/",
         "region": "us-east-2",
         "endpoint": "s3.amazonaws.com",
-        "delete-older-than-days": "30",
+        "experimental-delete-older-than-days": "30",
     }
     # apply new configuration options
     await ops_test.model.applications[S3_APP_NAME].set_config(configuration_parameters)
