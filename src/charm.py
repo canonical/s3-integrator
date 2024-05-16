@@ -79,6 +79,18 @@ class S3IntegratorCharm(ops.charm.CharmBase):
 
         # iterate over the option and check for updates
         for option in S3_OPTIONS:
+            # experimental options should be handled from the config with the "experimental-" prefix
+            if option == "delete-older-than-days" and f"experimental-{option}" in self.config:
+                config_value = str(self.config[f"experimental-{option}"])
+                # reset value if empty config_value
+                if config_value == "" and self.get_secret("app", option) is not None:
+                    self.set_secret("app", option, None)
+                    update_config.update({option: ""})
+                elif config_value != "":
+                    update_config.update({option: config_value})
+                    self.set_secret("app", option, config_value)
+                continue
+
             if option not in self.config:
                 logger.warning(f"Option {option} is not valid option!")
                 continue
@@ -102,9 +114,6 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 )
                 update_config.update({option: ca_chain})
                 self.set_secret("app", option, json.dumps(ca_chain))
-            elif option == "experimental-delete-older-than-days" and self.config[option] != "":
-                update_config.update({"delete-older-than-days": str(self.config[option])})
-                self.set_secret("app", "delete-older-than-days", str(self.config[option]))
             else:
                 update_config.update({option: str(self.config[option])})
                 self.set_secret("app", option, str(self.config[option]))
