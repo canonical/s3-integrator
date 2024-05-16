@@ -79,7 +79,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
 
         # iterate over the option and check for updates
         for option in S3_OPTIONS:
-            # experimental options should be handled from the config with the "experimental-" prefix
+            # experimental config options should be handled with the "experimental-" prefix
             if option == "delete-older-than-days" and f"experimental-{option}" in self.config:
                 config_value = str(self.config[f"experimental-{option}"])
                 # reset value if empty config_value
