@@ -138,7 +138,7 @@ async def test_config_options(ops_test: OpsTest):
         "path": "/test/path_1/",
         "region": "us-east-2",
         "endpoint": "s3.amazonaws.com",
-        "experimental-delete-older-than-days": "7",
+        "experimental-delete-older-than-days": 7,
     }
     # apply new configuration options
     await ops_test.model.applications[S3_APP_NAME].set_config(configuration_parameters)
@@ -152,7 +152,7 @@ async def test_config_options(ops_test: OpsTest):
     # test the correctness of the configuration fields
     assert configured_options["storage-class"] == "cinder"
     assert configured_options["s3-api-version"] == "1.0"
-    assert configured_options["delete-older-than-days"] == "7"
+    assert configured_options["delete-older-than-days"] == 7
     assert len(json.loads(configured_options["attributes"])) == 3
     assert len(json.loads(configured_options["tls-ca-chain"])) == 2
     assert configured_options["region"] == "us-east-2"
@@ -189,7 +189,7 @@ async def test_relation_creation(ops_test: OpsTest):
     assert application_data["secret-key"] == "new-test-secret-key"
     assert application_data["storage-class"] == "cinder"
     assert application_data["s3-api-version"] == "1.0"
-    assert application_data["delete-older-than-days"] == "7"
+    assert application_data["delete-older-than-days"] == 7
     assert len(json.loads(application_data["attributes"])) == 3
     assert len(json.loads(application_data["tls-ca-chain"])) == 2
     assert application_data["region"] == "us-east-2"
@@ -226,7 +226,7 @@ async def test_relation_creation(ops_test: OpsTest):
     assert application_data["secret-key"] == "new-test-secret-key"
     assert application_data["storage-class"] == "cinder"
     assert application_data["s3-api-version"] == "1.0"
-    assert application_data["delete-older-than-days"] == "7"
+    assert application_data["delete-older-than-days"] == 7
     assert len(json.loads(application_data["attributes"])) == 3
     assert len(json.loads(application_data["tls-ca-chain"])) == 2
     assert application_data["region"] == "us-east-2"

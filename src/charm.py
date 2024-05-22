@@ -19,7 +19,14 @@ from charms.data_platform_libs.v0.s3 import CredentialRequestedEvent, S3Provider
 from ops.charm import ActionEvent, ConfigChangedEvent, RelationChangedEvent, StartEvent
 from ops.model import ActiveStatus, BlockedStatus
 
-from constants import KEYS_LIST, PEER, S3_LIST_OPTIONS, S3_MANDATORY_OPTIONS, S3_OPTIONS
+from constants import (
+    KEYS_LIST,
+    MAX_RETENTION_DAYS,
+    PEER,
+    S3_LIST_OPTIONS,
+    S3_MANDATORY_OPTIONS,
+    S3_OPTIONS,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -81,22 +88,25 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         for option in S3_OPTIONS:
             # experimental config options should be handled with the "experimental-" prefix
             if option == "delete-older-than-days" and f"experimental-{option}" in self.config:
-                config_value = str(self.config[f"experimental-{option}"])
-                # reset value if empty config_value
-                if config_value == "" and self.get_secret("app", option) is not None:
-                    self.set_secret("app", option, None)
-                    update_config.update({option: ""})
-                elif config_value != "":
-                    update_config.update({option: config_value})
-                    self.set_secret("app", option, config_value)
+                config_value = self.config[f"experimental-{option}"]
+                # check if new config value is inside allowed range
+                if config_value > 0 and config_value <= MAX_RETENTION_DAYS:
+                    update_config.update({option: str(config_value)})
+                    self.set_secret("app", option, str(config_value))
+                else:
+                    logger.warning(
+                        "Invalid value %s for config 'delete-older-than-days', ignoring.",
+                        config_value,
+                    )
                 continue
 
-            if option not in self.config:
-                logger.warning(f"Option {option} is not valid option!")
-                continue
-            # skip in case of empty config
-            if self.config[option] == "":
-                # reset previous value if present (e.g., juju model-config --reset PARAMETER)
+            # option possibly removed from the config
+            # (e.g. 'juju config --reset <option>' or 'juju config <option>=""')
+            if option not in self.config or self.config[option] == "":
+                if option in KEYS_LIST:
+                    logger.debug("Secret parameter %s not stored inside config.", option)
+                    continue
+                # reset previous config value if present
                 if self.get_secret("app", option) is not None:
                     self.set_secret("app", option, None)
                     update_config.update({option: ""})
