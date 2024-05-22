@@ -93,10 +93,15 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 if config_value > 0 and config_value <= MAX_RETENTION_DAYS:
                     update_config.update({option: str(config_value)})
                     self.set_secret("app", option, str(config_value))
+                    self.unit.status = ActiveStatus()
                 else:
                     logger.warning(
-                        "Invalid value %s for config 'delete-older-than-days', ignoring.",
+                        "Invalid value %s for config '%s'",
                         config_value,
+                        option,
+                    )
+                    self.unit.status = BlockedStatus(
+                        f"Option {option} value {config_value} outside allowed range [1, {MAX_RETENTION_DAYS}]."
                     )
                 continue
 
