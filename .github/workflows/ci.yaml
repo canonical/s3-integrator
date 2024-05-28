@@ -63,7 +63,7 @@ jobs:
       - lint
       - unit-test
       - build
-    uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@move-checkout
+    uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v13.3.0
     with:
       artifact-prefix: packed-charm-cache-true
       architecture: ${{ matrix.architecture }}
