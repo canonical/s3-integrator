@@ -74,6 +74,8 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         logger.info(f"Missing options: {missing_options}")
         if missing_options:
             self.unit.status = ops.model.BlockedStatus(f"Missing parameters: {missing_options}")
+        else:
+            self.unit.status = ActiveStatus()
 
     def _on_config_changed(self, _: ConfigChangedEvent) -> None:  # noqa: C901
         """Event handler for configuration changed events."""
