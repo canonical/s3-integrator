@@ -1,4 +1,8 @@
 # S3-integrator
+[![Charmhub](https://charmhub.io/s3-integrator/badge.svg)](https://charmhub.io/s3-integrator)
+[![Release](https://github.com/canonical/s3-integrator/actions/workflows/release.yaml/badge.svg)](https://github.com/canonical/s3-integrator/actions/workflows/release.yaml)
+[![Tests](https://github.com/canonical/s3-integrator/actions/workflows/ci.yaml/badge.svg)](https://github.com/canonical/s3-integrator/actions/workflows/ci.yaml)
+
 ## Description
 
 An operator charm providing an integrator for connecting to S3 provides.
@@ -47,7 +51,7 @@ juju run-action s3-integrator/leader sync-s3-credentials access-key=<your_key> s
 ### Configuring the Integrator
 
 To configure the S3 integrator charm, you may provide the following configuration options:
-
+  
 - `endpoint`: the endpoint used to connect to the object storage.
 - `bucket`: the bucket/container name delivered by the provider (the bucket name can be specified also on the requirer application).
 - `region`: the region used to connect to the object storage.
@@ -57,6 +61,8 @@ To configure the S3 integrator charm, you may provide the following configuratio
 - `storage-class`:the storage class for objects uploaded to the object storage.
 - `tls-ca-chain`: the complete CA chain, which can be used for HTTPS validation.
 - `s3-api-version`: the S3 protocol specific API signature.
+- `experimental-delete-older-than-days`: the amount of day after which backups going to be deleted. EXPERIMENTAL option.
+
 
 The only mandatory fields for the integrator are access-key secret-key and bucket.
 

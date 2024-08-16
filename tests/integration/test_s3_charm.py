@@ -36,6 +36,7 @@ FIRST_RELATION = "first-s3-credentials"
 SECOND_RELATION = "second-s3-credentials"
 
 
+@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
 async def test_build_and_deploy(ops_test: OpsTest):
@@ -79,6 +80,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
     assert len(ops_test.model.applications[APPLICATION_APP_NAME].units) == 1
 
 
+@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_sync_credential_action(ops_test: OpsTest):
     """Tests the correct output of actions."""
@@ -98,12 +100,11 @@ async def test_sync_credential_action(ops_test: OpsTest):
     async with ops_test.fast_forward():
         await ops_test.model.wait_for_idle(apps=[S3_APP_NAME], status="active")
 
-    assert action_result["access-key"] == access_key
-    assert action_result["secret-key"] == secret_key
+    assert action_result["ok"] == "Credentials successfully updated."
 
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
-    assert connection_info["access-key"] == access_key
-    assert connection_info["secret-key"] == secret_key
+    assert connection_info["access-key"] == "************"
+    assert connection_info["secret-key"] == "************"
 
     # checks for another update of of the credentials
     updated_secret_key = "new-test-secret-key"
@@ -115,13 +116,14 @@ async def test_sync_credential_action(ops_test: OpsTest):
         await ops_test.model.wait_for_idle(apps=[S3_APP_NAME], status="active")
 
     # check that secret key has been updated
-    assert action_result["access-key"] == access_key
-    assert action_result["secret-key"] == updated_secret_key
+    assert action_result["ok"] == "Credentials successfully updated."
+
     connection_info = await fetch_action_get_connection_info(s3_integrator_unit)
-    assert connection_info["access-key"] == access_key
-    assert connection_info["secret-key"] == updated_secret_key
+    assert connection_info["access-key"] == "************"
+    assert connection_info["secret-key"] == "************"
 
 
+@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_config_options(ops_test: OpsTest):
     """Tests the correct handling of configuration parameters."""
@@ -136,6 +138,7 @@ async def test_config_options(ops_test: OpsTest):
         "path": "/test/path_1/",
         "region": "us-east-2",
         "endpoint": "s3.amazonaws.com",
+        "experimental-delete-older-than-days": "7",
     }
     # apply new configuration options
     await ops_test.model.applications[S3_APP_NAME].set_config(configuration_parameters)
@@ -149,6 +152,7 @@ async def test_config_options(ops_test: OpsTest):
     # test the correctness of the configuration fields
     assert configured_options["storage-class"] == "cinder"
     assert configured_options["s3-api-version"] == "1.0"
+    assert configured_options["delete-older-than-days"] == "7"
     assert len(json.loads(configured_options["attributes"])) == 3
     assert len(json.loads(configured_options["tls-ca-chain"])) == 2
     assert configured_options["region"] == "us-east-2"
@@ -156,6 +160,7 @@ async def test_config_options(ops_test: OpsTest):
     assert configured_options["endpoint"] == "s3.amazonaws.com"
 
 
+@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_relation_creation(ops_test: OpsTest):
     """Relate charms and wait for the expected changes in status."""
@@ -175,7 +180,7 @@ async def test_relation_creation(ops_test: OpsTest):
     application_data = await get_application_data(ops_test, APPLICATION_APP_NAME, FIRST_RELATION)
     # check if the different parameters correspond to expected ones.
     relation_id = relation_data[0]["relation-id"]
-    # check correcteness for some fields
+    # check correctness for some fields
     assert "access-key" in application_data
     assert "secret-key" in application_data
     assert "bucket" in application_data
@@ -184,6 +189,7 @@ async def test_relation_creation(ops_test: OpsTest):
     assert application_data["secret-key"] == "new-test-secret-key"
     assert application_data["storage-class"] == "cinder"
     assert application_data["s3-api-version"] == "1.0"
+    assert application_data["delete-older-than-days"] == "7"
     assert len(json.loads(application_data["attributes"])) == 3
     assert len(json.loads(application_data["tls-ca-chain"])) == 2
     assert application_data["region"] == "us-east-2"
@@ -220,12 +226,14 @@ async def test_relation_creation(ops_test: OpsTest):
     assert application_data["secret-key"] == "new-test-secret-key"
     assert application_data["storage-class"] == "cinder"
     assert application_data["s3-api-version"] == "1.0"
+    assert application_data["delete-older-than-days"] == "7"
     assert len(json.loads(application_data["attributes"])) == 3
     assert len(json.loads(application_data["tls-ca-chain"])) == 2
     assert application_data["region"] == "us-east-2"
     assert application_data["path"] == "/test/path_1/"
 
 
+@pytest.mark.group(1)
 async def test_relation_broken(ops_test: OpsTest):
     """Remove relation and wait for the expected changes in status."""
     # Remove relations

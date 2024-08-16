@@ -16,16 +16,7 @@ on:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install tox
-        # TODO: Consider replacing with custom image on self-hosted runner OR pinning version
-        run: python3 -m pip install tox
-      - name: Run linters
-        run: tox run -e lint
+    uses: canonical/data-platform-workflows/.github/workflows/lint.yaml@v18.0.0
 
   unit-test:
     name: Unit tests
@@ -33,55 +24,50 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install tox
-        # TODO: Consider replacing with custom image on self-hosted runner OR pinning version
-        run: python3 -m pip install tox
+        uses: actions/checkout@v4
+      - name: Install tox & poetry
+        run: |
+          pipx install tox
+          pipx install poetry
       - name: Run tests
         run: tox run -e unit
 
   build:
-    name: Build charms
-    uses: canonical/data-platform-workflows/.github/workflows/build_charms_with_cache.yaml@v2
+    strategy:
+      matrix:
+        path:
+          - .
+          - tests/integration/application-charm
+    name: Build charm
+    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v18.0.0
+    with:
+      path-to-charm-directory: ${{ matrix.path }}
+      cache: true
 
   integration-test:
     strategy:
       fail-fast: false
       matrix:
-        tox-environments:
-          - integration
-    name: ${{ matrix.tox-environments }}
+        juju:
+          - agent: 2.9.50
+            libjuju: ^2
+          - agent: 3.1.9
+        cloud:
+          - lxd
+          - microk8s
+        architecture:
+          - amd64
+          - arm64
+    name: Integration test charm | ${{ matrix.juju.agent }} | ${{ matrix.cloud }} | ${{ matrix.architecture }}
     needs:
       - lint
       - unit-test
       - build
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup operator environment
-        # TODO: Replace with custom image on self-hosted runner
-        uses: charmed-kubernetes/actions-operator@main
-        with:
-          provider: lxd
-          bootstrap-options: "--agent-version 2.9.38"
-      - name: Download packed charm(s)
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.build.outputs.artifact-name }}
-      - name: Select tests
-        id: select-tests
-        run: |
-          if [ "${{ github.event_name }}" == "schedule" ]
-          then
-            echo Running unstable and stable tests
-            echo "mark_expression=" >> $GITHUB_OUTPUT
-          else
-            echo Skipping unstable tests
-            echo "mark_expression=not unstable" >> $GITHUB_OUTPUT
-          fi
-      - name: Run integration tests
-        run: tox run -e ${{ matrix.tox-environments }} -- -m '${{ steps.select-tests.outputs.mark_expression }}'
-        env:
-          CI_PACKED_CHARMS: ${{ needs.build.outputs.charms }}
+    uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v18.0.0
+    with:
+      artifact-prefix: packed-charm-cache-true
+      architecture: ${{ matrix.architecture }}
+      cloud: ${{ matrix.cloud }}
+      juju-agent-version: ${{ matrix.juju.agent }}
+      libjuju-version-constraint: ${{ matrix.juju.libjuju }}
+      microk8s-snap-channel: 1.29-strict/stable

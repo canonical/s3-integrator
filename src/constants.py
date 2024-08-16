@@ -16,9 +16,12 @@ S3_OPTIONS = [
     "s3-api-version",
     "s3-uri-style",
     "tls-ca-chain",
+    "delete-older-than-days",
 ]
 S3_MANDATORY_OPTIONS = [
     "access-key",
     "secret-key",
 ]
 S3_LIST_OPTIONS = ["attributes", "tls-ca-chain"]
+KEYS_LIST = ["access-key", "secret-key"]
+MAX_RETENTION_DAYS = 9999999

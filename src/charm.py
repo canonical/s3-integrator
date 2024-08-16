@@ -19,7 +19,14 @@ from charms.data_platform_libs.v0.s3 import CredentialRequestedEvent, S3Provider
 from ops.charm import ActionEvent, ConfigChangedEvent, RelationChangedEvent, StartEvent
 from ops.model import ActiveStatus, BlockedStatus
 
-from constants import PEER, S3_LIST_OPTIONS, S3_MANDATORY_OPTIONS, S3_OPTIONS
+from constants import (
+    KEYS_LIST,
+    MAX_RETENTION_DAYS,
+    PEER,
+    S3_LIST_OPTIONS,
+    S3_MANDATORY_OPTIONS,
+    S3_OPTIONS,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -67,8 +74,10 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         logger.info(f"Missing options: {missing_options}")
         if missing_options:
             self.unit.status = ops.model.BlockedStatus(f"Missing parameters: {missing_options}")
+        else:
+            self.unit.status = ActiveStatus()
 
-    def _on_config_changed(self, _: ConfigChangedEvent) -> None:
+    def _on_config_changed(self, _: ConfigChangedEvent) -> None:  # noqa: C901
         """Event handler for configuration changed events."""
         # Only execute in the unit leader
         if not self.unit.is_leader():
@@ -79,12 +88,32 @@ class S3IntegratorCharm(ops.charm.CharmBase):
 
         # iterate over the option and check for updates
         for option in S3_OPTIONS:
-            if option not in self.config:
-                logger.warning(f"Option {option} is not valid option!")
+            # experimental config options should be handled with the "experimental-" prefix
+            if option == "delete-older-than-days" and f"experimental-{option}" in self.config:
+                config_value = self.config[f"experimental-{option}"]
+                # check if new config value is inside allowed range
+                if config_value > 0 and config_value <= MAX_RETENTION_DAYS:
+                    update_config.update({option: str(config_value)})
+                    self.set_secret("app", option, str(config_value))
+                    self.unit.status = ActiveStatus()
+                else:
+                    logger.warning(
+                        "Invalid value %s for config '%s'",
+                        config_value,
+                        option,
+                    )
+                    self.unit.status = BlockedStatus(
+                        f"Option {option} value {config_value} outside allowed range [1, {MAX_RETENTION_DAYS}]."
+                    )
                 continue
-            # skip in case of empty config
-            if self.config[option] == "":
-                # reset previous value if present (e.g., juju model-config --reset PARAMETER)
+
+            # option possibly removed from the config
+            # (e.g. 'juju config --reset <option>' or 'juju config <option>=""')
+            if option not in self.config or self.config[option] == "":
+                if option in KEYS_LIST:
+                    logger.debug("Secret parameter %s not stored inside config.", option)
+                    continue
+                # reset previous config value if present
                 if self.get_secret("app", option) is not None:
                     self.set_secret("app", option, None)
                     update_config.update({option: ""})
@@ -103,8 +132,8 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 update_config.update({option: ca_chain})
                 self.set_secret("app", option, json.dumps(ca_chain))
             else:
-                update_config.update({option: self.config[option]})
-                self.set_secret("app", option, self.config[option])
+                update_config.update({option: str(self.config[option])})
+                self.set_secret("app", option, str(self.config[option]))
 
         if len(self.s3_provider.relations) > 0:
             for relation in self.s3_provider.relations:
@@ -181,12 +210,12 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         # set parameters in the secrets
         self.set_secret("app", "access-key", access_key)
         self.set_secret("app", "secret-key", secret_key)
-        credentials = {"access-key": access_key, "secret-key": secret_key}
         # update relation data if the relation is present
         if len(self.s3_provider.relations) > 0:
             for relation in self.s3_provider.relations:
                 self.s3_provider.set_access_key(relation.id, access_key)
                 self.s3_provider.set_secret_key(relation.id, secret_key)
+        credentials = {"ok": "Credentials successfully updated."}
         event.set_results(credentials)
 
     def _on_peer_relation_changed(self, _: RelationChangedEvent) -> None:
@@ -211,7 +240,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         if access_key is None or secret_key is None:
             event.fail("Credentials are not set!")
             return
-        credentials = {"access-key": access_key, "secret-key": secret_key}
+        credentials = {"ok": "Credentials are configured."}
         event.set_results(credentials)
 
     def on_get_connection_info_action(self, event: ActionEvent):
@@ -219,11 +248,16 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         current_configuration = {}
         for option in S3_OPTIONS:
             if self.get_secret("app", option) is not None:
-                current_configuration[option] = self.get_secret("app", option)
+                if option in KEYS_LIST:
+                    current_configuration[option] = "************"  # Hide keys from configuration
+                else:
+                    current_configuration[option] = self.get_secret("app", option)
+
         # emit event fail if no option is set in the charm
         if len(current_configuration) == 0:
             event.fail("Credentials are not set!")
             return
+
         event.set_results(current_configuration)
 
     @staticmethod
