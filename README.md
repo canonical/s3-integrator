@@ -30,7 +30,7 @@ charmcraft pack
 ```
 Then,
 ```shell
-juju deploy ./s3-integrator_ubuntu-20.04-amd64.charm
+juju deploy ./s3-integrator_ubuntu-22.04-amd64.charm
 ```
 
 ### Adding your S3 Credentials
