@@ -77,7 +77,7 @@ Attributes needs to be specified in comma-separated format.
 To retrieve the S3 credentials, run the following action:
   
 ```bash
-juju run s3-integrator/leader get-s3-credentials --wait
+juju run s3-integrator/leader get-s3-credentials
 ```
 <details>
 <summary><small><b>juju <= 2.9</b></small></summary>
@@ -92,7 +92,7 @@ If the credentials are not set, the action will fail.
 To retrieve the set of connection parameters, run the following command:
 
 ```bash
-juju run s3-integrator/leader get-s3-connection-info --wait
+juju run s3-integrator/leader get-s3-connection-info
 ```
 <details>
 <summary><small><b>juju <= 2.9</b></small></summary>
