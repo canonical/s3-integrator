@@ -8,6 +8,10 @@
 An operator charm providing an integrator for connecting to S3 provides.
 
 ## Usage
+>[!WARNING]
+> This README uses **Juju 3** commands.
+>
+> If you are using **Juju <= 2.9**, check the collapsible sections below code blocks.
 
 ### Deploying the S3 Integrator
 
@@ -26,55 +30,77 @@ charmcraft pack
 ```
 Then,
 ```shell
-juju deploy ./s3-integrator_ubuntu-20.04-amd64.charm
+juju deploy ./s3-integrator_ubuntu-22.04-amd64.charm
 ```
 
 ### Adding your S3 Credentials
 
 To deploy your S3 credentials to the application, run the following action:
-
+  
 ```bash
-$ juju run-action s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
+juju run s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
 ```
-
+<details>
+<summary><small><b>juju <= 2.9</b></small></summary>
+  
+```bash
+juju run-action s3-integrator/leader sync-s3-credentials access-key=<your_key> secret-key=<your_secret_key>
+```
+</details>
+  
 ### Configuring the Integrator
 
 To configure the S3 integrator charm, you may provide the following configuration options:
+  
+- `endpoint`: the endpoint used to connect to the object storage.
+- `bucket`: the bucket/container name delivered by the provider (the bucket name can be specified also on the requirer application).
+- `region`: the region used to connect to the object storage.
+- `path`: the path inside the bucket/container to store objects.
+- `attributes`: the custom metadata (HTTP headers).
+- `s3-uri-style`: the S3 protocol specific bucket path lookup type.
+- `storage-class`:the storage class for objects uploaded to the object storage.
+- `tls-ca-chain`: the complete CA chain, which can be used for HTTPS validation.
+- `s3-api-version`: the S3 protocol specific API signature.
+- `experimental-delete-older-than-days`: the amount of day after which backups going to be deleted. EXPERIMENTAL option.
 
-- endpoint: the endpoint used to connect to the object storage.
-- bucket: the bucket/container name delivered by the provider (the bucket name can be specified also on the requirer application).
-- region: the region used to connect to the object storage.
-- path: the path inside the bucket/container to store objects.
-- attributes: the custom metadata (HTTP headers).
-- s3-uri-style: the S3 protocol specific bucket path lookup type.
-- storage-class:the storage class for objects uploaded to the object storage.
-- tls-ca-chain: the complete CA chain, which can be used for HTTPS validation.
-- s3-api-version: the S3 protocol specific API signature.
-- experimental-delete-older-than-days: the amount of day after which backups going to be deleted. EXPERIMENTAL option.
 
 The only mandatory fields for the integrator are access-key secret-key and bucket.
 
 In order to set ca-chain certificate use the following command:
 ```bash
-$ juju config s3-integrator tls-ca-chain="$(base64 -w0 your_ca_chain.pem)"
+juju config s3-integrator tls-ca-chain="$(base64 -w0 your_ca_chain.pem)"
 ```
 Attributes needs to be specified in comma-separated format. 
 
 ### Configuring the Integrator
 
 To retrieve the S3 credentials, run the following action:
+  
+```bash
+juju run s3-integrator/leader get-s3-credentials
+```
+<details>
+<summary><small><b>juju <= 2.9</b></small></summary>
 
 ```bash
-$ juju run-action s3-integrator/leader get-s3-credentials --wait
+juju run-action s3-integrator/leader get-s3-credentials --wait
 ```
+</details>
 
 If the credentials are not set, the action will fail.
 
 To retrieve the set of connection parameters, run the following command:
 
 ```bash
-$ juju run-action s3-integrator/leader get-s3-connection-info --wait
+juju run s3-integrator/leader get-s3-connection-info
 ```
+<details>
+<summary><small><b>juju <= 2.9</b></small></summary>
+
+```bash
+juju run-action s3-integrator/leader get-s3-connection-info --wait
+```
+</details>
 
 
 ## Relations 
@@ -82,11 +108,19 @@ $ juju run-action s3-integrator/leader get-s3-connection-info --wait
 Relations are supported via the `s3` interface. To create a relation:
 
 ```bash
-$ juju relate s3-integrator application
+juju integrate s3-integrator application
 ```
+<details>
+<summary><small><b>juju <= 2.9</b></small></summary>
+
+```bash
+juju relate s3-integrator application
+```
+</details>
+
 To remove relation a relation:
 ```bash
-$ juju remove-relation s3-integrator application
+juju remove-relation s3-integrator application
 ```
 
 ## Security
