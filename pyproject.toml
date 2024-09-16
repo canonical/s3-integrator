@@ -6,7 +6,7 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
-ops = "^2.15.0"
+ops = "^2.16.1"
 
 [tool.poetry.group.charm-libs.dependencies]
 
@@ -15,7 +15,7 @@ optional = true
 
 [tool.poetry.group.format.dependencies]
 isort = "^5.13.2"
-black = "^24.4.2"
+black = "^24.8.0"
 
 [tool.poetry.group.lint]
 optional = true
@@ -29,13 +29,13 @@ flake8-builtins = "^2.5.0"
 pep8-naming = "^0.14.1"
 
 [tool.poetry.group.unit.dependencies]
-coverage = {extras = ["toml"], version = "^7.4.4"}
-pytest = "^8.2.2"
+coverage = {extras = ["toml"], version = "^7.6.1"}
+pytest = "^8.3.3"
 pytest-asyncio = "*"
 parameterized = "^0.9.0"
 
 [tool.poetry.group.integration.dependencies]
-pytest = "^8.2.2"
+pytest = "^8.3.3"
 pytest-github-secrets = {git = "https://github.com/canonical/data-platform-workflows", tag = "v21.0.1", subdirectory = "python/pytest_plugins/github_secrets"}
 pytest-operator = "^0.36.0"
 pytest-operator-cache = {git = "https://github.com/canonical/data-platform-workflows", tag = "v21.0.1", subdirectory = "python/pytest_plugins/pytest_operator_cache"}
