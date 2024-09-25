@@ -168,8 +168,7 @@ async def test_relation_creation(ops_test: OpsTest):
 
     async with ops_test.fast_forward():
         await ops_test.model.block_until(
-            lambda: is_relation_joined(ops_test, FIRST_RELATION, FIRST_RELATION)
-            == True  # noqa: E712
+            lambda: is_relation_joined(ops_test, FIRST_RELATION, FIRST_RELATION) is True
         )
 
         await ops_test.model.wait_for_idle(apps=APPS, status="active")
@@ -210,8 +209,7 @@ async def test_relation_creation(ops_test: OpsTest):
     # wait for relation joined
     async with ops_test.fast_forward():
         await ops_test.model.block_until(
-            lambda: is_relation_joined(ops_test, SECOND_RELATION, SECOND_RELATION)
-            == True  # noqa: E712
+            lambda: is_relation_joined(ops_test, SECOND_RELATION, SECOND_RELATION) is True
         )
         await ops_test.model.wait_for_idle(apps=APPS, status="active")
 
