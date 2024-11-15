@@ -44,7 +44,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         )
         self.framework.observe(self.on[PEER].relation_changed, self._on_peer_relation_changed)
         # actions
-        self.framework.observe(self.on.sync_s3_credentials_action, self._on_sync_s3_credentials)
+        self.framework.observe(self.on.sync_s3_credentials_action, self._on_sync_s3_credentials_action)
         self.framework.observe(self.on.get_s3_credentials_action, self.on_get_credentials_action)
         self.framework.observe(
             self.on.get_s3_connection_info_action, self.on_get_connection_info_action
@@ -92,7 +92,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             if option == "delete-older-than-days" and f"experimental-{option}" in self.config:
                 config_value = self.config[f"experimental-{option}"]
                 # check if new config value is inside allowed range
-                if config_value > 0 and config_value <= MAX_RETENTION_DAYS:
+                if 0 < config_value <= MAX_RETENTION_DAYS:
                     update_config.update({option: str(config_value)})
                     self.set_secret("app", option, str(config_value))
                     self.unit.status = ActiveStatus()
@@ -198,15 +198,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 missing_options.append(config_option)
         return missing_options
 
-    def _on_sync_s3_credentials(self, event: ops.charm.ActionEvent) -> None:
-        """Handle a user synchronizing their S3 credentials to the charm."""
-        # only leader can write the new access and secret key into peer relation.
-        if not self.unit.is_leader():
-            event.fail("The action can be run only on leader unit.")
-            return
-        # read parameters from the event
-        access_key = event.params["access-key"]
-        secret_key = event.params["secret-key"]
+    def _sync_s3_credentials(self, access_key, secret_key):
         # set parameters in the secrets
         self.set_secret("app", "access-key", access_key)
         self.set_secret("app", "secret-key", secret_key)
@@ -215,6 +207,17 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             for relation in self.s3_provider.relations:
                 self.s3_provider.set_access_key(relation.id, access_key)
                 self.s3_provider.set_secret_key(relation.id, secret_key)
+
+    def _on_sync_s3_credentials_action(self, event: ops.charm.ActionEvent) -> None:
+        """Handle a user synchronizing their S3 credentials to the charm."""
+        # only leader can write the new access and secret key into peer relation.
+        if not self.unit.is_leader():
+            event.fail("The action can be run only on leader unit.")
+            return
+        # read parameters from the event
+        access_key = event.params["access-key"]
+        secret_key = event.params["secret-key"]
+        self._sync_s3_credentials(access_key, secret_key)
         credentials = {"ok": "Credentials successfully updated."}
         event.set_results(credentials)
 

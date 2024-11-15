@@ -62,7 +62,7 @@ class TestCharm(unittest.TestCase):
         self.harness.set_leader(True)
         action_event = mock.Mock()
         action_event.params = {"access-key": "test-access-key", "secret-key": "test-secret-key"}
-        self.harness.charm._on_sync_s3_credentials(action_event)
+        self.harness.charm._on_sync_s3_credentials_action(action_event)
 
         access_key = self.harness.charm.app_peer_data["access-key"]
         secret_key = self.harness.charm.app_peer_data["secret-key"]
