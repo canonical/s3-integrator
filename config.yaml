@@ -53,8 +53,8 @@ options:
       This config option takes precedence over values passed via the sync-s3-credentials action.
       This value must be unset for the action to have effect.
   secret-key:
-  type: string
-  description: |
-    Access Key Secret (password) for connecting to the object storage.
-    This config option takes precedence over values passed via the sync-s3-credentials action.
-    This value must be unset for the action to have effect.
+    type: string
+    description: |
+      Access Key Secret (password) for connecting to the object storage.
+      This config option takes precedence over values passed via the sync-s3-credentials action.
+      This value must be unset for the action to have effect.
