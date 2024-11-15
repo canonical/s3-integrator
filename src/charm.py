@@ -131,6 +131,9 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 )
                 update_config.update({option: ca_chain})
                 self.set_secret("app", option, json.dumps(ca_chain))
+            elif option in ["access-key", "secret-key"]:
+                # This will be called twice, but it's ok because ops buffers relation writes.
+                self._sync_s3_credentials(self.config["access-key"], self.config["secret-key"])
             else:
                 update_config.update({option: str(self.config[option])})
                 self.set_secret("app", option, str(self.config[option]))
@@ -213,6 +216,12 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         # only leader can write the new access and secret key into peer relation.
         if not self.unit.is_leader():
             event.fail("The action can be run only on leader unit.")
+            return
+        if self.config["access-key"] or self.config["secret-key"]:
+            event.fail(
+                "Config options for access-key, secret-key take precedence over the action. "
+                "Unset the config options to use this action."
+            )
             return
         # read parameters from the event
         access_key = event.params["access-key"]
