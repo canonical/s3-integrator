@@ -113,7 +113,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 if option in KEYS_LIST:
                     logger.debug("Secret parameter %s not stored inside config.", option)
                     # This will be called twice, but it's ok because ops buffers relation writes.
-                    self._sync_s3_credentials(self.config["access-key"], self.config["secret-key"])
+                    self._sync_s3_credentials(self.config.get("access-key"), self.config.get("secret-key"))
                     continue
                 # reset previous config value if present
                 if self.get_secret("app", option) is not None:
@@ -216,7 +216,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         if not self.unit.is_leader():
             event.fail("The action can be run only on leader unit.")
             return
-        if self.config["access-key"] or self.config["secret-key"]:
+        if self.config.get("access-key") or self.config.get("secret-key"):
             event.fail(
                 "Config options for access-key, secret-key take precedence over the action. "
                 "Unset the config options to use this action."
