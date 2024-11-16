@@ -114,7 +114,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             if option not in self.config or self.config[option] == "":
                 if option in KEYS_LIST:
                     # We will reset credentials only if the config options is given, because we do
-                    # not want to accidentally wipe credentials previsouly set by the sync action.
+                    # not want to accidentally wipe credentials previously set by the sync action.
                     logger.debug("Secret parameter %s not stored inside config.", option)
                     continue
                 # reset previous config value if present
@@ -137,7 +137,7 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 self.set_secret("app", option, json.dumps(ca_chain))
             elif option in ["access-key", "secret-key"]:
                 # We sync credentials only if one of the config options is given, because we do
-                # not want to accidentally wipe credentials previsouly set by the sync action.
+                # not want to accidentally wipe credentials previously set by the sync action.
                 access_key = self.config.get("access-key")
                 secret_key = self.config.get("secret-key")
                 if access_key or secret_key:
