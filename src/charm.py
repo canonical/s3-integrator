@@ -112,6 +112,8 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             if option not in self.config or self.config[option] == "":
                 if option in KEYS_LIST:
                     logger.debug("Secret parameter %s not stored inside config.", option)
+                    # This will be called twice, but it's ok because ops buffers relation writes.
+                    self._sync_s3_credentials(self.config["access-key"], self.config["secret-key"])
                     continue
                 # reset previous config value if present
                 if self.get_secret("app", option) is not None:
@@ -131,9 +133,6 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 )
                 update_config.update({option: ca_chain})
                 self.set_secret("app", option, json.dumps(ca_chain))
-            elif option in ["access-key", "secret-key"]:
-                # This will be called twice, but it's ok because ops buffers relation writes.
-                self._sync_s3_credentials(self.config["access-key"], self.config["secret-key"])
             else:
                 update_config.update({option: str(self.config[option])})
                 self.set_secret("app", option, str(self.config[option]))
