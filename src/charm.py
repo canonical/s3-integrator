@@ -44,7 +44,9 @@ class S3IntegratorCharm(ops.charm.CharmBase):
         )
         self.framework.observe(self.on[PEER].relation_changed, self._on_peer_relation_changed)
         # actions
-        self.framework.observe(self.on.sync_s3_credentials_action, self._on_sync_s3_credentials_action)
+        self.framework.observe(
+            self.on.sync_s3_credentials_action, self._on_sync_s3_credentials_action
+        )
         self.framework.observe(self.on.get_s3_credentials_action, self.on_get_credentials_action)
         self.framework.observe(
             self.on.get_s3_connection_info_action, self.on_get_connection_info_action
@@ -111,9 +113,9 @@ class S3IntegratorCharm(ops.charm.CharmBase):
             # (e.g. 'juju config --reset <option>' or 'juju config <option>=""')
             if option not in self.config or self.config[option] == "":
                 if option in KEYS_LIST:
+                    # We will reset credentials only if the config options is given, because we do
+                    # not want to accidentally wipe credentials previsouly set by the sync action.
                     logger.debug("Secret parameter %s not stored inside config.", option)
-                    # This will be called twice, but it's ok because ops buffers relation writes.
-                    self._sync_s3_credentials(self.config.get("access-key"), self.config.get("secret-key"))
                     continue
                 # reset previous config value if present
                 if self.get_secret("app", option) is not None:
@@ -133,6 +135,16 @@ class S3IntegratorCharm(ops.charm.CharmBase):
                 )
                 update_config.update({option: ca_chain})
                 self.set_secret("app", option, json.dumps(ca_chain))
+            elif option in ["access-key", "secret-key"]:
+                # We sync credentials only if one of the config options is given, because we do
+                # not want to accidentally wipe credentials previsouly set by the sync action.
+                access_key = self.config.get("access-key")
+                secret_key = self.config.get("secret-key")
+                if access_key or secret_key:
+                    # This will be called twice, but it's ok because ops buffers relation writes.
+                    self._sync_s3_credentials(
+                        self.config.get("access-key"), self.config.get("secret-key")
+                    )
             else:
                 update_config.update({option: str(self.config[option])})
                 self.set_secret("app", option, str(self.config[option]))
