@@ -1,10 +1,12 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>canonical/data-platform//renovate_presets/charm.json5"],
-  "reviewers": ["dragomirp", "welpaolo"],
-  "packageRules": [
-    // Later rules override earlier rules
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'github>canonical/data-platform//renovate_presets/charm.json5',
   ],
-  "regexManagers": [
-  ]
+  reviewers: [
+    'dragomirp',
+    'welpaolo',
+  ],
+  packageRules: [],
+  customManagers: [],
 }
