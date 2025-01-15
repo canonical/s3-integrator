@@ -60,7 +60,6 @@ jobs:
       path-to-charm-directory: ${{ matrix.path }}
       cache: false  # TODO: will change to `true` afte cache is reenabled
       charmcraft-snap-channel: latest/beta/data-platform  # TODO: remove after charmcraft 3.3 stable release
-      artifact-prefix: test-packed-charm-cache-true
 
   integration-test:
     strategy:
@@ -83,7 +82,7 @@ jobs:
       - build
     uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v26.0.0
     with:
-      artifact-prefix: test-packed-charm-cache-true
+      artifact-prefix: test-packed-charm-cache-false
       architecture: ${{ matrix.architecture }}
       cloud: ${{ matrix.cloud }}
       juju-agent-version: ${{ matrix.juju.agent }}
