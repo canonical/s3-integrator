@@ -86,4 +86,3 @@ parts:
     source: .
     prime:
       - LICENSE
-      - templates
