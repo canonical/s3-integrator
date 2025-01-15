@@ -56,7 +56,6 @@ parts:
       - libffi-dev  # Needed to build Python dependencies with Rust from source
       - libssl-dev  # Needed to build Python dependencies with Rust from source
       - pkg-config  # Needed to build Python dependencies with Rust from source
-      - libpq-dev
     override-build: |
       # Workaround for https://github.com/canonical/charmcraft/issues/2068
       # rustup used to install rustc and cargo, which are needed to build Python dependencies with Rust from source
