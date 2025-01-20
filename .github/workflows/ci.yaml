@@ -9,14 +9,18 @@ concurrency:
 on:
   pull_request:
   schedule:
-    - cron: '53 0 * * *' # Daily at 00:53 UTC
+    - cron: '53 0 * * *'  # Daily at 00:53 UTC
   # Triggered on push to branch "main" by .github/workflows/release.yaml
   workflow_call:
+    outputs:
+      artifact-prefix:
+        description: build_charm.yaml `artifact-prefix` output
+        value: ${{ jobs.build.outputs.artifact-prefix }}
 
 jobs:
   lint:
     name: Lint
-    uses: canonical/data-platform-workflows/.github/workflows/lint.yaml@v24.0.6
+    uses: canonical/data-platform-workflows/.github/workflows/lint.yaml@v29.0.1
 
   unit-test:
     name: Unit tests
@@ -44,6 +48,7 @@ jobs:
       - name: Check libs
         uses: canonical/charming-actions/check-libraries@2.6.3
         with:
+          charmcraft-channel: latest/candidate  # TODO: remove after charmcraft 3.3 stable release
           credentials: "${{ secrets.CHARMHUB_TOKEN }}" # FIXME: current token will expire in 2023-07-04
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
@@ -54,10 +59,11 @@ jobs:
           - .
           - tests/integration/application-charm
     name: Build charm
-    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v24.0.6
+    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v29.0.1
     with:
       path-to-charm-directory: ${{ matrix.path }}
-      cache: true
+      cache: false  # TODO: will change to `true` afte cache is reenabled
+      charmcraft-snap-channel: latest/candidate  # TODO: remove after charmcraft 3.3 stable release
 
   integration-test:
     strategy:
@@ -78,9 +84,9 @@ jobs:
       - lint
       - unit-test
       - build
-    uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v24.0.6
+    uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v29.0.1
     with:
-      artifact-prefix: packed-charm-cache-true
+      artifact-prefix: ${{ needs.build.outputs.artifact-prefix }}
       architecture: ${{ matrix.architecture }}
       cloud: ${{ matrix.cloud }}
       juju-agent-version: ${{ matrix.juju.agent }}
