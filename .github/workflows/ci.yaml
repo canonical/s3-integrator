@@ -9,9 +9,13 @@ concurrency:
 on:
   pull_request:
   schedule:
-    - cron: '53 0 * * *' # Daily at 00:53 UTC
+    - cron: '53 0 * * *'  # Daily at 00:53 UTC
   # Triggered on push to branch "main" by .github/workflows/release.yaml
   workflow_call:
+    outputs:
+      artifact-prefix:
+        description: build_charm.yaml `artifact-prefix` output
+        value: ${{ jobs.build.outputs.artifact-prefix }}
 
 jobs:
   lint:
@@ -82,7 +86,7 @@ jobs:
       - build
     uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v29.0.1
     with:
-      artifact-prefix: packed-charm-cache-false
+      artifact-prefix: ${{ needs.build.outputs.artifact-prefix }}
       architecture: ${{ matrix.architecture }}
       cloud: ${{ matrix.cloud }}
       juju-agent-version: ${{ matrix.juju.agent }}
