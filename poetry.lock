@@ -1186,7 +1186,7 @@ name = "pytest-github-secrets"
 version = "0.1.0"
 description = ""
 optional = false
-python-versions = "^3.8"
+python-versions = ">=3.8"
 groups = ["integration"]
 files = []
 develop = false
@@ -1194,8 +1194,8 @@ develop = false
 [package.source]
 type = "git"
 url = "https://github.com/canonical/data-platform-workflows"
-reference = "v29.0.1"
-resolved_reference = "ac9cb94d1d63944d75dad2af56c5c59d5fa82e39"
+reference = "v29.0.3"
+resolved_reference = "8189a62d00ac6085586efe572b1b0ff8d5810445"
 subdirectory = "python/pytest_plugins/github_secrets"
 
 [[package]]
@@ -1223,7 +1223,7 @@ name = "pytest-operator-cache"
 version = "0.1.0"
 description = ""
 optional = false
-python-versions = "^3.8"
+python-versions = ">=3.8"
 groups = ["integration"]
 files = []
 develop = false
@@ -1234,8 +1234,8 @@ pyyaml = "*"
 [package.source]
 type = "git"
 url = "https://github.com/canonical/data-platform-workflows"
-reference = "v29.0.1"
-resolved_reference = "ac9cb94d1d63944d75dad2af56c5c59d5fa82e39"
+reference = "v29.0.3"
+resolved_reference = "8189a62d00ac6085586efe572b1b0ff8d5810445"
 subdirectory = "python/pytest_plugins/pytest_operator_cache"
 
 [[package]]
@@ -1243,7 +1243,7 @@ name = "pytest-operator-groups"
 version = "0.1.0"
 description = ""
 optional = false
-python-versions = "^3.8"
+python-versions = ">=3.8"
 groups = ["integration"]
 files = []
 develop = false
@@ -1254,8 +1254,8 @@ pytest = "*"
 [package.source]
 type = "git"
 url = "https://github.com/canonical/data-platform-workflows"
-reference = "v29.0.1"
-resolved_reference = "ac9cb94d1d63944d75dad2af56c5c59d5fa82e39"
+reference = "v29.0.3"
+resolved_reference = "8189a62d00ac6085586efe572b1b0ff8d5810445"
 subdirectory = "python/pytest_plugins/pytest_operator_groups"
 
 [[package]]
@@ -1692,4 +1692,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "0658ef89ddc141a1d419df0e58be4e77d947f301b0d1ddd12c0e673d84a2723a"
+content-hash = "2f499d60a376f6dd4c80789342e9810ef8169a04bad97e948286cfb24a1e43f9"
