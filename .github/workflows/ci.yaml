@@ -48,7 +48,6 @@ jobs:
       - name: Check libs
         uses: canonical/charming-actions/check-libraries@2.6.3
         with:
-          charmcraft-channel: latest/candidate  # TODO: remove after charmcraft 3.3 stable release
           credentials: "${{ secrets.CHARMHUB_TOKEN }}" # FIXME: current token will expire in 2023-07-04
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
@@ -58,11 +57,10 @@ jobs:
         path:
           - .
           - tests/integration/application-charm
-    name: Build charm
+    name: Build charm | ${{ matrix.path }}
     uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v29.0.3
     with:
       path-to-charm-directory: ${{ matrix.path }}
-      charmcraft-snap-channel: latest/candidate  # TODO: remove after charmcraft 3.3 stable release
 
   integration-test:
     strategy:
