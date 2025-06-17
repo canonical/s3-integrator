@@ -17,7 +17,7 @@ An operator charm providing an integrator for connecting to S3 provides.
 
 #### Charmhub
 ```shell
-juju deploy s3-integrator --channel edge
+juju deploy s3-integrator --channel 1/stable
 ```
 #### From source
 ```shell
