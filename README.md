@@ -7,7 +7,7 @@
 
 An operator charm providing an integrator for connecting to S3 provides. The charm in the current repository allows to configure the S3 bucket informations using Juju actions, and it is publishes to the [s3-integrator](https://charmhub.io/s3-integrator?channel=1/stable) charm under the track `1/*`.
 
-For the Juju secret-based user-experience, please refer to the [object-storage-integrators](https://github.com/canonical/object-storage-integrators) repository, that is published to the [s3-integrator](https://charmhub.io/s3-integrator?channel=1/stable) charm under the track `2/*.`
+For the Juju secret-based user-experience, please refer to the [object-storage-integrators](https://github.com/canonical/object-storage-integrators) repository, that is published to the [s3-integrator](https://charmhub.io/s3-integrator?channel=2/edge) charm under the track `2/*.`
 
 > `latest/stable` is deprecated and it should not be used moving forward. After YYYY-MM-DD, the `latest/stable` channel will be removed. 
 
