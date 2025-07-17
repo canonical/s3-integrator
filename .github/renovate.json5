@@ -7,6 +7,10 @@
     'dragomirp',
     'welpaolo',
   ],
+  // Need to check tests dir to update test charm dependenices
+  "poetry": {
+    "ignorePaths": []
+  },
   packageRules: [],
   customManagers: [],
 }
