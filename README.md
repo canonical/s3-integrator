@@ -6,6 +6,11 @@
 ## Description
 
 An operator charm providing an integrator for connecting to S3 provides.
+>[!WARNING]
+> This repo corresponds to the track `1` of the `s3-integrator` charm, which does not support setting config options via secrets.
+> For the track `2` of `s3-integrator` that has support for setting config options via secret, please refer to the newer [`object-storage-integrators`](https://github.com/canonical/object-storage-integrators/tree/main/s3) repo.
+
+
 
 ## Usage
 >[!WARNING]
