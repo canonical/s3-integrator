@@ -9,10 +9,7 @@ import logging
 import re
 from typing import Dict, List, Optional
 
-import ops
 import ops.charm
-import ops.framework
-import ops.lib
 import ops.main
 import ops.model
 from charms.data_platform_libs.v0.s3 import CredentialRequestedEvent, S3Provider
