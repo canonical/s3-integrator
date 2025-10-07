@@ -9,7 +9,7 @@ An operator charm providing an integrator for connecting to S3 provides. The cha
 
 For the Juju secret-based user-experience, please refer to the [object-storage-integrators](https://github.com/canonical/object-storage-integrators) repository, that is published to the [s3-integrator](https://charmhub.io/s3-integrator?channel=2/edge) charm under the track `2/*.`
 
-> `latest/stable` is deprecated and it should not be used moving forward. After YYYY-MM-DD, the `latest/stable` channel will be removed. 
+> `latest/stable` is deprecated and it should not be used moving forward. After 26.10, the `latest/stable` channel will be removed. 
 
 ## Usage
 >[!WARNING]
