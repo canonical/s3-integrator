@@ -26,14 +26,14 @@ type = ["pytest-mypy"]
 
 [[package]]
 name = "opentelemetry-api"
-version = "1.37.0"
+version = "1.38.0"
 description = "OpenTelemetry Python API"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "opentelemetry_api-1.37.0-py3-none-any.whl", hash = "sha256:accf2024d3e89faec14302213bc39550ec0f4095d1cf5ca688e1bfb1c8612f47"},
-    {file = "opentelemetry_api-1.37.0.tar.gz", hash = "sha256:540735b120355bd5112738ea53621f8d5edb35ebcd6fe21ada3ab1c61d1cd9a7"},
+    {file = "opentelemetry_api-1.38.0-py3-none-any.whl", hash = "sha256:2891b0197f47124454ab9f0cf58f3be33faca394457ac3e09daba13ff50aa582"},
+    {file = "opentelemetry_api-1.38.0.tar.gz", hash = "sha256:f4c193b5e8acb0912b06ac5b16321908dd0843d75049c091487322284a3eea12"},
 ]
 
 [package.dependencies]
@@ -42,14 +42,14 @@ typing-extensions = ">=4.5.0"
 
 [[package]]
 name = "ops"
-version = "3.3.0"
+version = "3.3.1"
 description = "The Python library behind great charms"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "ops-3.3.0-py3-none-any.whl", hash = "sha256:4f03013dfe325690add181f989b571259cc4add8a8a5cafbd380ffcc2bbd7c1d"},
-    {file = "ops-3.3.0.tar.gz", hash = "sha256:f89613def8b4a231218038ba5656927c522532e42b2dd8c06e12ff7a45bc647a"},
+    {file = "ops-3.3.1-py3-none-any.whl", hash = "sha256:38229bb1cc6d9c2aa4dff4495f3e33af928dbd1070e8c5d8b697dfb32dcd89a8"},
+    {file = "ops-3.3.1.tar.gz", hash = "sha256:8dec621c32a31365d040eaf05960c0e65a2ffbcdbfa91107e03b1ee9d4d26034"},
 ]
 
 [package.dependencies]
@@ -58,8 +58,8 @@ PyYAML = "==6.*"
 websocket-client = "==1.*"
 
 [package.extras]
-testing = ["ops-scenario (==8.3.0)"]
-tracing = ["ops-tracing (==3.3.0)"]
+testing = ["ops-scenario (==8.3.1)"]
+tracing = ["ops-tracing (==3.3.1)"]
 
 [[package]]
 name = "pyyaml"
@@ -196,4 +196,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "345816d7664680dd21bf1061ea74a892c9f665f43a1eddce70145303c6a295c2"
+content-hash = "11a6dc075324c333cb360f6d34c8593dfb50bdd61cd0b86cb199937b8b78d63e"
