@@ -15,7 +15,7 @@ ops = "^3.3.1"
 optional = true
 
 [tool.poetry.group.format.dependencies]
-ruff = "^0.14.1"
+ruff = "^0.14.2"
 
 [tool.poetry.group.lint]
 optional = true
