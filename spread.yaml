@@ -1,4 +1,4 @@
-project: postgresql-test-app
+project: s3-integrator
 
 backends:
   # Derived from https://github.com/jnsgruk/zinc-k8s-operator/blob/a21eae8399eb3b9df4ddb934b837af25ef831976/spread.yaml#L11
