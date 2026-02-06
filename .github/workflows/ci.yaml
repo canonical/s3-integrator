@@ -17,10 +17,11 @@ on:
         description: build_charm.yaml `artifact-prefix` output
         value: ${{ jobs.build.outputs.artifact-prefix }}
 
+permissions: {}
 jobs:
   lint:
     name: Lint
-    uses: canonical/data-platform-workflows/.github/workflows/lint.yaml@v36.0.2
+    uses: canonical/data-platform-workflows/.github/workflows/lint.yaml@v41.1.1
 
   unit-test:
     name: Unit tests
@@ -36,21 +37,6 @@ jobs:
       - name: Run tests
         run: tox run -e unit
 
-  lib-check:
-    name: Check libraries
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - name: Check libs
-        uses: canonical/charming-actions/check-libraries@2.7.0
-        with:
-          credentials: "${{ secrets.CHARMHUB_TOKEN }}" # FIXME: current token will expire in 2023-07-04
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-
   build:
     strategy:
       matrix:
@@ -58,34 +44,15 @@ jobs:
           - .
           - tests/integration/application-charm
     name: Build charm | ${{ matrix.path }}
-    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v36.0.2
+    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v41.1.1
     with:
       path-to-charm-directory: ${{ matrix.path }}
 
   integration-test:
-    strategy:
-      fail-fast: false
-      matrix:
-        juju:
-          - agent: 2.9.52  # renovate: juju-agent-pin-minor
-            libjuju: ^2
-          - agent: 3.6.11  # renovate: juju-agent-pin-minor
-        cloud:
-          - lxd
-          - microk8s
-        architecture:
-          - amd64
-          - arm64
-    name: Integration test charm | ${{ matrix.juju.agent }} | ${{ matrix.cloud }} | ${{ matrix.architecture }}
+    name: Integration test charm
     needs:
       - lint
-      - unit-test
       - build
-    uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v36.0.2
+    uses: ./.github/workflows/integration_test.yaml
     with:
       artifact-prefix: ${{ needs.build.outputs.artifact-prefix }}
-      architecture: ${{ matrix.architecture }}
-      cloud: ${{ matrix.cloud }}
-      juju-agent-version: ${{ matrix.juju.agent }}
-      libjuju-version-constraint: ${{ matrix.juju.libjuju }}
-      microk8s-snap-channel: 1.34-strict/stable  # renovate: latest microk8s

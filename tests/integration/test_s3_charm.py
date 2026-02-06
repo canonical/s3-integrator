@@ -11,6 +11,7 @@ import pytest
 import yaml
 from pytest_operator.plugin import OpsTest
 
+from . import architecture
 from .helpers import (
     fetch_action_get_connection_info,
     fetch_action_sync_s3_credentials,
@@ -42,8 +43,8 @@ SECOND_RELATION = "second-s3-credentials"
 async def test_build_and_deploy(ops_test: OpsTest):
     """Build the charm and deploy 1 units for provider and requirer charm."""
     # Build and deploy charm from local source folder
-    s3_charm = await ops_test.build_charm(".")
-    app_charm = await ops_test.build_charm("./tests/integration/application-charm/")
+    s3_charm = f"./s3-integrator_ubuntu@22.04-{architecture.architecture}.charm"
+    app_charm = f"./tests/integration/application-charm/application_ubuntu@22.04-{architecture.architecture}.charm"
 
     await asyncio.gather(
         ops_test.model.deploy(s3_charm, application_name=S3_APP_NAME, num_units=1),
