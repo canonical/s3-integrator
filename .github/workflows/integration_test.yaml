@@ -102,7 +102,7 @@ jobs:
           go install github.com/snapcore/spread/cmd/spread@latest
       - name: Download packed charm(s)
         timeout-minutes: 5
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: ${{ inputs.artifact-prefix }}-*
           merge-multiple: true
@@ -143,7 +143,7 @@ jobs:
       - name: Upload logs
         timeout-minutes: 5
         if: ${{ !contains(matrix.job.spread_job, 'juju29') && (success() || (failure() && steps.spread.outcome == 'failure')) }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: logs-integration-test-${{ matrix.job.name_in_artifact }}
           path: ~/logs/
