@@ -42,14 +42,14 @@ typing-extensions = ">=4.5.0"
 
 [[package]]
 name = "ops"
-version = "3.5.2"
+version = "3.6.0"
 description = "The Python library behind great charms"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "ops-3.5.2-py3-none-any.whl", hash = "sha256:c715128a51ddcdf0fff463428b0f56a93e5963187e599b66594b4fc74458781b"},
-    {file = "ops-3.5.2.tar.gz", hash = "sha256:849c9ed85eadf265b8a927d5e857cd112221dd71b35e4b13329ccb938c3afd18"},
+    {file = "ops-3.6.0-py3-none-any.whl", hash = "sha256:341c6688684446cc4b42860738898683feb271175bb9c4775ae68c81e4e0976a"},
+    {file = "ops-3.6.0.tar.gz", hash = "sha256:a1c3361049c66759840a436143b07c74c2a46dcc44cbfd1177a9051f849c7971"},
 ]
 
 [package.dependencies]
@@ -58,8 +58,8 @@ PyYAML = "==6.*"
 websocket-client = "==1.*"
 
 [package.extras]
-testing = ["ops-scenario (==8.5.2)"]
-tracing = ["ops-tracing (==3.5.2)"]
+testing = ["ops-scenario (==8.6.0)"]
+tracing = ["ops-tracing (==3.6.0)"]
 
 [[package]]
 name = "pyyaml"
@@ -196,4 +196,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "40ab713d938c8987b576af3f4dd0e6ab6a8ba73e9ae097bdf2da757d36289deb"
+content-hash = "844fa0b0a7488806edefffa45600edf67909b076f1b05e24cc499151222defb4"
