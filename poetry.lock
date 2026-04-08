@@ -1963,4 +1963,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "afeb9867207d297046028e543a533853a1c14ed31856910d9492f61752c56926"
+content-hash = "fbc45e6210cb96921b6e56dc8a8d65270f57a6d3326339b84c3d5a5419cf1eed"
