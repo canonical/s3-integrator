@@ -15,7 +15,7 @@ ops = "^3.7.1"
 optional = true
 
 [tool.poetry.group.format.dependencies]
-ruff = "^0.15.17"
+ruff = "^0.15.18"
 
 [tool.poetry.group.lint]
 optional = true
@@ -24,13 +24,13 @@ optional = true
 codespell = "^2.4.2"
 
 [tool.poetry.group.unit.dependencies]
-coverage = {extras = ["toml"], version = "^7.14.1"}
-pytest = "^9.1.0"
+coverage = {extras = ["toml"], version = "^7.14.3"}
+pytest = "^9.1.1"
 pytest-asyncio = "*"
 parameterized = "^0.9.0"
 
 [tool.poetry.group.integration.dependencies]
-pytest = "^9.1.0"
+pytest = "^9.1.1"
 pytest-operator = "^0.43.2"
 juju = "^3.5.2.0"
 
