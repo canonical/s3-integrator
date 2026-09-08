@@ -2,6 +2,7 @@
 [![Charmhub](https://charmhub.io/s3-integrator/badge.svg)](https://charmhub.io/s3-integrator)
 [![Release](https://github.com/canonical/s3-integrator/actions/workflows/release.yaml/badge.svg)](https://github.com/canonical/s3-integrator/actions/workflows/release.yaml)
 [![Tests](https://github.com/canonical/s3-integrator/actions/workflows/ci.yaml/badge.svg)](https://github.com/canonical/s3-integrator/actions/workflows/ci.yaml)
+[![Scan](https://github.com/canonical/s3-integrator/actions/workflows/tiobe_scan.yaml/badge.svg?branch=main)](https://github.com/canonical/s3-integrator/actions/workflows/tiobe_scan.yaml)
 
 ## Description
 
