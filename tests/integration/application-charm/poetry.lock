@@ -17,14 +17,14 @@ typing-extensions = ">=4.5.0"
 
 [[package]]
 name = "ops"
-version = "3.8.2"
+version = "3.8.3"
 description = "The Python library behind great charms"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "ops-3.8.2-py3-none-any.whl", hash = "sha256:dcead2241d17921441123425072dd6adddf5f337dc6d6fd2b3ba1fd60a0af822"},
-    {file = "ops-3.8.2.tar.gz", hash = "sha256:a516e76a76fdfd4a37f26f2b9956c332b56bda72014c8565ceb4f6deb137407f"},
+    {file = "ops-3.8.3-py3-none-any.whl", hash = "sha256:037feb823874da6d700852e1a5c06927077311c939276daaa1b925fd16cbf15b"},
+    {file = "ops-3.8.3.tar.gz", hash = "sha256:fd0c474f0c650bc9decfa613578a800931e6cf1ea948c7a59f55aeacfd8e6d4e"},
 ]
 
 [package.dependencies]
@@ -33,8 +33,8 @@ PyYAML = "==6.*"
 websocket-client = "==1.*"
 
 [package.extras]
-testing = ["ops-scenario (==8.8.2)"]
-tracing = ["ops-tracing (==3.8.2)"]
+testing = ["ops-scenario (==8.8.3)"]
+tracing = ["ops-tracing (==3.8.3)"]
 
 [[package]]
 name = "pyyaml"
