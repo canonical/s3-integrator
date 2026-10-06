@@ -7,7 +7,7 @@ requires-poetry = ">=2.0.0"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-ops = "^3.8.2"
+ops = "^3.8.3"
 
 [tool.poetry.group.charm-libs.dependencies]
 
@@ -15,7 +15,7 @@ ops = "^3.8.2"
 optional = true
 
 [tool.poetry.group.format.dependencies]
-ruff = "^0.16.9"
+ruff = "^0.16.10"
 
 [tool.poetry.group.lint]
 optional = true
