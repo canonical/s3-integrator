@@ -17,24 +17,24 @@ typing-extensions = ">=4.5.0"
 
 [[package]]
 name = "ops"
-version = "3.8.3"
+version = "3.9.0"
 description = "The Python library behind great charms"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "ops-3.8.3-py3-none-any.whl", hash = "sha256:037feb823874da6d700852e1a5c06927077311c939276daaa1b925fd16cbf15b"},
-    {file = "ops-3.8.3.tar.gz", hash = "sha256:fd0c474f0c650bc9decfa613578a800931e6cf1ea948c7a59f55aeacfd8e6d4e"},
+    {file = "ops-3.9.0-py3-none-any.whl", hash = "sha256:2dc7a77edae408886ccd348be590df0e03589dfe5e3e115e238d5746850eed0c"},
+    {file = "ops-3.9.0.tar.gz", hash = "sha256:f8fd7fa05359e9fc057663b1a652602f5803db0b37e1bbfe9b63971c54e4b3b3"},
 ]
 
 [package.dependencies]
 opentelemetry-api = ">=1.0,<2.0"
-PyYAML = "==6.*"
+pyyaml = "==6.*"
 websocket-client = "==1.*"
 
 [package.extras]
-testing = ["ops-scenario (==8.8.3)"]
-tracing = ["ops-tracing (==3.8.3)"]
+testing = ["ops-scenario (==8.9.0)"]
+tracing = ["ops-tracing (==3.9.0)"]
 
 [[package]]
 name = "pyyaml"
@@ -151,4 +151,4 @@ test = ["pytest", "websockets"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "7925b19764e12d851998eefbdd864588f0099771093a92784ba1daa18ba17c01"
+content-hash = "ddd572f94519abf08b3df1e68466d38f5731bb51f56195b0dd6e10615b66ecbb"
