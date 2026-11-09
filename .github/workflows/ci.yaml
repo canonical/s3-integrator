@@ -20,9 +20,10 @@ on:
 jobs:
   lint-workflows:
     name: Lint .github/workflows/
-    uses: canonical/data-platform-workflows/.github/workflows/lint_workflows.yaml@v52.0.0
+    uses: canonical/data-platform-workflows/.github/workflows/lint_workflows.yaml@v54.0.0
     permissions:
       contents: read
+    cache-mode: none
 
   lint:
     name: Lint
@@ -40,6 +41,7 @@ jobs:
       - name: tox run -e lint
         run: tox run -e lint
     permissions: {}
+    cache-mode: none
 
   unit-test:
     name: Unit tests
@@ -57,6 +59,7 @@ jobs:
       - name: Run tests
         run: tox run -e unit
     permissions: {}
+    cache-mode: none
 
   build:
     strategy:
@@ -65,11 +68,12 @@ jobs:
           - .
           - tests/integration/application-charm
     name: Build charm | ${{ matrix.path }}
-    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v52.0.0
+    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v54.0.0
     with:
       path-to-charm-directory: ${{ matrix.path }}
     permissions:
       contents: read
+    cache-mode: none
 
   integration-test:
     name: Integration test charm
@@ -82,3 +86,4 @@ jobs:
     with:
       artifact-prefix: ${{ needs.build.outputs.artifact-prefix }}
     permissions: {}
+    cache-mode: none
